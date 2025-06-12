@@ -1,0 +1,117 @@
+package advent.telegrambot.handler.quest;
+
+import advent.telegrambot.classifier.DataType;
+import advent.telegrambot.domain.Step;
+import advent.telegrambot.domain.quest.Quest;
+import advent.telegrambot.domain.quest.QuestWithAnyAnswer;
+import advent.telegrambot.handler.StepCreateHandler;
+import advent.telegrambot.repository.ClsDataTypeRepository;
+import advent.telegrambot.repository.ClsQuestTypeRepository;
+import advent.telegrambot.repository.StepRepository;
+import advent.telegrambot.service.AdminProgressService;
+import advent.telegrambot.service.AdventService;
+import advent.telegrambot.service.StepCommonService;
+import advent.telegrambot.service.StepService;
+import advent.telegrambot.utils.AppException;
+import advent.telegrambot.utils.MessageUtils;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.telegram.telegrambots.meta.api.objects.Update;
+
+import java.util.Collections;
+import java.util.stream.Collectors;
+
+import static advent.telegrambot.classifier.QuestType.ANY_ANSWER;
+import static advent.telegrambot.utils.MessageUtils.getTelegramUserId;
+
+@Component
+@RequiredArgsConstructor
+public class QuestWithAnyAnswerHandler implements QuestHandler<QuestWithAnyAnswer>, StepCreateHandler {
+    private final StepService stepService;
+    private final ClsDataTypeRepository clsDataTypeRepository;
+    private final AdventService adventService;
+    private final AdminProgressService adminProgressService;
+    private final StepRepository stepRepository;
+    private final StepCommonService stepCommonService;
+    private final ClsQuestTypeRepository clsQuestTypeRepository;
+
+    private final static int EXPECTED_ROWS = 5;
+
+    @Override
+    public void handle(@NotNull QuestWithAnyAnswer quest, Update update) {
+        DataType answerType = DataType.of(update);
+        if (answerType == null || quest.isNotNeedType(answerType)) {
+            throw new AppException("Это не тот ответ, который ожидается\uD83D\uDE1F. Я жду " + quest.getRusNameNeedTypes());
+        }
+
+        stepService.handleNextSteps(
+                quest.getStep().getAdvent(),
+                quest.getStep().getDay(),
+                quest.getStep().getOrder()
+        );
+    }
+
+    @Override
+    public Class<QuestWithAnyAnswer> getHandledQuestClass() {
+        return QuestWithAnyAnswer.class;
+    }
+
+    @Override
+    public boolean canHandle(Integer questType) {
+        return ANY_ANSWER.is(questType);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String getMessageForCreate() {
+        String dataTypeDescription = clsDataTypeRepository.findAll().stream()
+                .map(dataType -> String.format("%s (%s)", dataType.getId(), dataType.getName()))
+                .collect(Collectors.joining(",", "(", ")"));
+        return "Для добавления создания шага введите день, порядок шага (оставьте строку пустой - порядок будет максимальный в рамках дня), текст без переносов строки (если он нужен, если не нужен, то оставьте пустую строку), " +
+                "подсказки на одной строчке, разделенные знаком | (если не нужны, то оставьте пустую строку), " +
+                "идентификаторы возможных типов данных ответа, разделенные знаком | " +
+                dataTypeDescription +
+                ". Каждые новые данные вводятся с новой строки. Порядок важен.\n" +
+                "Пример,\n" +
+                "1\n" +
+                "1\n" +
+                "Привет, нарисуй новогоднюю открытку и пришли её фотографию\n" +
+                "\n" +
+                "1"
+                ;
+    }
+
+    @Override
+    @Transactional
+    public Long createStep(Update update) {
+        long personId = getTelegramUserId(update);
+        Pair<Integer, Integer> ids = adminProgressService.getAdventStepsCreateIds(personId);
+        Step step = createStep(MessageUtils.getMessageText(update), ids.getLeft());
+        stepRepository.save(step);
+        return step.getId();
+    }
+
+    private Step createStep(String input, @NonNull Integer adventId) {
+        if (input == null) {
+            throw new AppException("Нет данных для создания шага");
+        }
+
+        String[] data = input.split("\n");
+        if (data.length != EXPECTED_ROWS) {
+            throw new AppException("Ожидаются данные на " + EXPECTED_ROWS + " строчках");
+        }
+
+        Step step = stepCommonService.createStep(data, adventId);
+        QuestWithAnyAnswer quest = new QuestWithAnyAnswer();
+        quest.setStep(step);
+        step.setQuests(Collections.singletonList(quest));
+        quest.setHints(stepCommonService.parseHints(data[EXPECTED_ROWS - 2], quest));
+        quest.setAllowedAnswerTypes(DataType.getIdsFromString(data[EXPECTED_ROWS - 1]));
+
+        return step;
+    }
+}

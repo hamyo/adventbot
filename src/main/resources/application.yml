@@ -1,0 +1,40 @@
+telegram:
+  bot:
+    name:
+    token:
+
+server:
+  port: 8083
+
+spring:
+  application:
+    name: telegrambot
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/advent_tt
+    username:
+    password: 
+    hikari:
+      maximum-pool-size: 10               # Оптимально для средних нагрузок
+      connection-timeout: 30000           # 30 секунд
+      idle-timeout: 600000                # 10 минут
+      max-lifetime: 1800000               # 30 минут
+      pool-name: SpringBootHikariCP
+  jpa:
+    hibernate:
+      ddl-auto: validate # сделать none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    show-sql: true                       # Только для разработки
+    open-in-view: false
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

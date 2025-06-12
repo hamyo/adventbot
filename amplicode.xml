@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AmplicodeJpaPluginProjectSettings">
+    <option name="entityNameTemplate" />
+    <option name="scaffoldingLanguage" />
+  </component>
+  <component name="AmplicodePersistenceUnitSettings">
+    <persistence-units>
+      <persistence-unit name="Default" defaultIncludeChangeLogFile="src/main/resources/db/changelog/db.changelog-master.xml">
+        <packages>
+          <package value="advent.telegrambot" />
+        </packages>
+      </persistence-unit>
+    </persistence-units>
+  </component>
+</project>

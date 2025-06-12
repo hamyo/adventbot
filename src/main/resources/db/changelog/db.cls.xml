@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd">
+    <changeSet id="1747910038082-1" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM cls_advent_type where cat_id = 1</sqlCheck>
+        </preConditions>
+        <insert tableName="cls_advent_type" >
+            <column name="cat_id" value="1"/>
+            <column name="cat_name" value="Адвент по сообщению от участника"/>
+        </insert>
+    </changeSet>
+    <changeSet id="1747910038082-2" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM cls_advent_type where cat_id = 2</sqlCheck>
+        </preConditions>
+        <insert tableName="cls_advent_type" >
+            <column name="cat_id" value="2"/>
+            <column name="cat_name" value="Адвент со стартом по коду"/>
+        </insert>
+    </changeSet>
+    <changeSet id="1747910038082-3" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM cls_quest_type where cqt_id = 1</sqlCheck>
+        </preConditions>
+        <insert tableName="cls_quest_type" >
+            <column name="cqt_id" value="1"/>
+            <column name="cqt_name" value="Решение за адмипнистратором"/>
+            <column name="cqt_description" value="Задача, где решение о выполнении принимает администратор"/>
+        </insert>
+    </changeSet>
+    <changeSet id="1747910038082-4" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM cls_quest_type where cqt_id = 2</sqlCheck>
+        </preConditions>
+        <insert tableName="cls_quest_type" >
+            <column name="cqt_id" value="2"/>
+            <column name="cqt_name" value="Ответ от кого-нибудь"/>
+            <column name="cqt_description" value="Задача, где нужен ответ определенного типа от любого участника (не администратора)"/>
+        </insert>
+    </changeSet>
+    <changeSet id="1747910038082-5" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM cls_quest_type where cqt_id = 3</sqlCheck>
+        </preConditions>
+        <insert tableName="cls_quest_type" >
+            <column name="cqt_id" value="3"/>
+            <column name="cqt_name" value="Ответ от всех"/>
+            <column name="cqt_description" value="Задача, где нужен ответ определенного типа от всех участников (не администраторов)"/>
+        </insert>
+    </changeSet>
+    <changeSet id="1747910038082-6" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM cls_quest_type where cqt_id = 4</sqlCheck>
+        </preConditions>
+        <insert tableName="cls_quest_type" >
+            <column name="cqt_id" value="4"/>
+            <column name="cqt_name" value="Текстовый ответ"/>
+            <column name="cqt_description" value="Задача, где нужен текстовый ответ, соответствующий правильному значению"/>
+        </insert>
+    </changeSet>
+    <changeSet id="1747910038082-7" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM cls_quest_type where cqt_id = 5</sqlCheck>
+        </preConditions>
+        <insert tableName="cls_quest_type" >
+            <column name="cqt_id" value="5"/>
+            <column name="cqt_name" value="Быки и коровы"/>
+            <column name="cqt_description" value="Задача 'Быки и коровы', где нужно угадать загаданное число из 4 цифр. Цифры не повторяются."/>
+        </insert>
+    </changeSet>
+    <changeSet id="1747910038082-8" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM cls_data_type where cdt_id = 1</sqlCheck>
+        </preConditions>
+        <insert tableName="cls_data_type" >
+            <column name="cdt_id" value="1"/>
+            <column name="cdt_name" value="Изображение"/>
+        </insert>
+    </changeSet>
+    <changeSet id="1747910038082-9" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM cls_data_type where cdt_id = 2</sqlCheck>
+        </preConditions>
+        <insert tableName="cls_data_type" >
+            <column name="cdt_id" value="2"/>
+            <column name="cdt_name" value="Аудиофайл"/>
+        </insert>
+    </changeSet>
+    <changeSet id="1747910038082-10" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM cls_data_type where cdt_id = 3</sqlCheck>
+        </preConditions>
+        <insert tableName="cls_data_type" >
+            <column name="cdt_id" value="3"/>
+            <column name="cdt_name" value="Голосовое сообщение"/>
+        </insert>
+    </changeSet>
+    <changeSet id="1747910038082-11" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM cls_data_type where cdt_id = 4</sqlCheck>
+        </preConditions>
+        <insert tableName="cls_data_type" >
+            <column name="cdt_id" value="4"/>
+            <column name="cdt_name" value="Видео"/>
+        </insert>
+    </changeSet>
+    <changeSet id="1747910038082-12" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM cls_data_type where cdt_id = 5</sqlCheck>
+        </preConditions>
+        <insert tableName="cls_data_type" >
+            <column name="cdt_id" value="5"/>
+            <column name="cdt_name" value="Текст"/>
+        </insert>
+    </changeSet>
+    <changeSet id="1747910038082-13" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM cls_data_type where cdt_id = 6</sqlCheck>
+        </preConditions>
+        <insert tableName="cls_data_type" >
+            <column name="cdt_id" value="6"/>
+            <column name="cdt_name" value="Gif-анимация"/>
+        </insert>
+    </changeSet>
+    <changeSet id="1747910038082-14" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM cls_data_type where cdt_id = 7</sqlCheck>
+        </preConditions>
+        <insert tableName="cls_data_type" >
+            <column name="cdt_id" value="7"/>
+            <column name="cdt_name" value="Документ"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

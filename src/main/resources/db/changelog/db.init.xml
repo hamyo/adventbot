@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <changeSet id="1746985319977-1" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="person"/>
+            </not>
+        </preConditions>
+        <createTable remarks="Участники" tableName="person" tablespace="advent_dbs">
+            <column name="p_id" remarks="Идентификатор" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_p"
+                             primaryKeyTablespace="advent_dbs"/>
+            </column>
+            <column defaultValueBoolean="false" name="p_is_admin" remarks="Признак админа" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="p_name_nominative" remarks="Имя в именительном падеже" type="VARCHAR(50)"/>
+            <column name="p_name_genitive" remarks="Имя в родительном падеже" type="VARCHAR(50)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1746985319977-2" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="advent"/>
+            </not>
+        </preConditions>
+        <createTable remarks="Адвент" tableName="advent" tablespace="advent_dbs">
+            <column autoIncrement="true" name="a_id" remarks="Идентификатор" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="advent_pkey"
+                             primaryKeyTablespace="advent_dbs"/>
+            </column>
+            <column name="a_hello_message" remarks="Приветственное сообщение" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="a_chat_id" remarks="ID чата телеграмма для адвента" type="BIGINT"/>
+            <column name="cat_id" remarks="Тип адвента" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="a_start_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="a_finish_date" type="DATE"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1746985319977-3" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="content"/>
+            </not>
+        </preConditions>
+        <createTable remarks="Контент" tableName="content">
+            <column autoIncrement="true" name="cn_id" remarks="Идентификатор" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cn"/>
+            </column>
+            <column name="cdt_id" remarks="Тип данных" type="SMALLINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cn_name" remarks="Наименование" type="VARCHAR(300)"/>
+            <column name="cn_data" remarks="Данные" type="BYTEA">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cn_caption" remarks="Описание" type="TEXT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1746985319977-4" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="step"/>
+            </not>
+        </preConditions>
+        <createTable remarks="Шаг" tableName="step">
+            <column autoIncrement="true" name="s_id" remarks="Идентификатор" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_s"/>
+            </column>
+            <column name="s_order" remarks="Порядок" type="SMALLINT">
+                <constraints nullable="false" checkConstraint="s_order > 0"/>
+            </column>
+            <column name="s_day" remarks="День" type="SMALLINT">
+                <constraints nullable="false" checkConstraint="s_day between 1 and 100"/>
+            </column>
+            <column name="cn_id" remarks="Контент" type="BIGINT"/>
+            <column name="s_text" remarks="Текст" type="TEXT"/>
+            <column name="a_id" remarks="Адвент" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1746985319977-5" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="hint"/>
+            </not>
+        </preConditions>
+        <createTable remarks="Подсказка" tableName="hint">
+            <column autoIncrement="true" name="h_id" remarks="Идентификатор" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_h"/>
+            </column>
+            <column name="h_text" remarks="Текст" type="TEXT"/>
+            <column name="cn_id" remarks="Контент" type="BIGINT"/>
+            <column name="q_id" remarks="Тип задания" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1746985319977-6" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="quest"/>
+            </not>
+        </preConditions>
+        <createTable remarks="Задание" tableName="quest">
+            <column autoIncrement="true" name="q_id" remarks="Идентификатор" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_q"/>
+            </column>
+            <column name="cqt_id" remarks="Тип задания" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="q_right_values" remarks="Правильные ответы" type="VARCHAR[]"/>
+            <column name="q_allowed_answer_types" remarks="Допустимые типы ответа" type="INT2[]"/>
+            <column name="s_id" remarks="Идентификатор шага" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1746985319977-7" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="i_a_chat_id"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="i_a_chat_id" tableName="advent" tablespace="advent_dbs">
+            <column name="a_chat_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1746985319977-8" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="i_s_a_id"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="i_s_a_id" tableName="step" tablespace="advent_dbs">
+            <column name="a_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1746985319977-9" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="i_h_q_id"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="i_h_q_id" tableName="hint" tablespace="advent_dbs">
+            <column name="q_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1746985319977-10" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="advent_person"/>
+            </not>
+        </preConditions>
+        <createTable remarks="Связь участника и адвента" tableName="advent_person" tablespace="advent_dbs">
+            <column name="a_id" remarks="Идентификатор адвента" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ap"
+                             primaryKeyTablespace="advent_dbs"/>
+            </column>
+            <column name="p_id" remarks="Идентификатор участника" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ap"
+                             primaryKeyTablespace="advent_dbs"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1747307397735-11" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="advent_current_step"/>
+            </not>
+        </preConditions>
+        <createTable remarks="Текущий прогресс адвента" tableName="advent_current_step" tablespace="advent_dbs">
+            <column name="a_id" remarks="Идентификатор адвента" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_acs" primaryKeyTablespace="advent_dbs"/>
+            </column>
+            <column name="s_id" remarks="Текущий шаг" type="BIGINT"/>
+            <column name="acs_data" remarks="Дополнительные данные" type="JSON"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1747307397735-12" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="i_acs_s_id"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="i_acs_s_id" tableName="advent_current_step" tablespace="advent_dbs">
+            <column name="s_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1746985319977-13" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="cls_advent_type"/>
+            </not>
+        </preConditions>
+        <createTable remarks="Тип адвента" tableName="cls_advent_type" tablespace="advent_dbs">
+            <column name="cat_id" remarks="Идентификатор" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cat"
+                             primaryKeyTablespace="advent_dbs"/>
+            </column>
+            <column name="cat_name" remarks="Наименование" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1746985319977-14" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="cls_data_type"/>
+            </not>
+        </preConditions>
+        <createTable remarks="Тип данных" tableName="cls_data_type" tablespace="advent_dbs">
+            <column name="cdt_id" remarks="Идентификатор" type="SMALLINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cdt"
+                             primaryKeyTablespace="advent_dbs"/>
+            </column>
+            <column name="cdt_name" remarks="Наименование" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cdt_default_mime_type" remarks="Mime-тип по-умолчанию" type="VARCHAR(30)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1746985319977-15" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="cls_quest_type"/>
+            </not>
+        </preConditions>
+        <createTable remarks="Тип задания" tableName="cls_quest_type" tablespace="advent_dbs">
+            <column name="cqt_id" remarks="Идентификатор" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cqt"
+                             primaryKeyTablespace="advent_dbs"/>
+            </column>
+            <column name="cqt_name" remarks="Наименование" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cqt_description" remarks="Описание" type="VARCHAR(300)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1746985319977-16" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="code"/>
+            </not>
+        </preConditions>
+        <createTable remarks="Код" tableName="code" tablespace="advent_dbs">
+            <column name="a_id" remarks="Идентификатор" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_c"
+                             primaryKeyTablespace="advent_dbs"/>
+            </column>
+            <column name="c_value" remarks="Значение" type="VARCHAR(40)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_c"
+                             primaryKeyTablespace="advent_dbs"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1746985319977-17" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_a_cat"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="cat_id" baseTableName="advent" constraintName="fk_a_cat"
+                                 onDelete="RESTRICT" onUpdate="NO ACTION" referencedColumnNames="cat_id"
+                                 referencedTableName="cls_advent_type"/>
+    </changeSet>
+    <changeSet id="1746985319977-18" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_ap_a"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="a_id" baseTableName="advent_person" constraintName="fk_ap_a"
+                                 onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="a_id"
+                                 referencedTableName="advent"/>
+    </changeSet>
+    <changeSet id="1746985319977-19" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_ap_p"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="p_id" baseTableName="advent_person" constraintName="fk_ap_p"
+                                 onDelete="RESTRICT" onUpdate="NO ACTION" referencedColumnNames="p_id"
+                                 referencedTableName="person"/>
+    </changeSet>
+    <changeSet id="1746985319977-20" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_c_a"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="a_id" baseTableName="code" constraintName="fk_c_a" onDelete="CASCADE"
+                                 onUpdate="NO ACTION" referencedColumnNames="a_id" referencedTableName="advent"/>
+    </changeSet>
+    <changeSet id="1746985319977-21" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_cn_cdt"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="cdt_id" baseTableName="content" constraintName="fk_cn_cdt"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="cdt_id"
+                                 referencedTableName="cls_data_type"/>
+    </changeSet>
+    <changeSet id="1746985319977-22" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_h_cn"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="cn_id" baseTableName="hint" constraintName="fk_h_cn"
+                                 onDelete="RESTRICT" onUpdate="NO ACTION" referencedColumnNames="cn_id"
+                                 referencedTableName="content"/>
+    </changeSet>
+    <changeSet id="1746985319977-23" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_h_q"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="q_id" baseTableName="hint" constraintName="fk_h_q" onDelete="CASCADE"
+                                 onUpdate="NO ACTION" referencedColumnNames="q_id" referencedTableName="quest"/>
+    </changeSet>
+    <changeSet id="1746985319977-24" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_q_cqt"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="cqt_id" baseTableName="quest" constraintName="fk_q_cqt"
+                                 onDelete="RESTRICT" onUpdate="NO ACTION" referencedColumnNames="cqt_id"
+                                 referencedTableName="cls_quest_type"/>
+    </changeSet>
+    <changeSet id="1746985319977-25" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_s_a"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="a_id" baseTableName="step" constraintName="fk_s_a" onDelete="CASCADE"
+                                 onUpdate="NO ACTION" referencedColumnNames="a_id" referencedTableName="advent"/>
+    </changeSet>
+    <changeSet id="1746985319977-26" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_s_cn"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="cn_id" baseTableName="step" constraintName="fk_s_cn"
+                                 onDelete="RESTRICT" onUpdate="NO ACTION" referencedColumnNames="cn_id"
+                                 referencedTableName="content"/>
+    </changeSet>
+    <changeSet id="1747307397735-27" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_acs_a"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="a_id" baseTableName="advent_current_step" constraintName="fk_acs_a"
+                                 onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="a_id"
+                                 referencedTableName="advent"/>
+    </changeSet>
+    <changeSet id="1747307397735-28" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_acs_s"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="s_id" baseTableName="advent_current_step" constraintName="fk_acs_s"
+                                 onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="s_id"
+                                 referencedTableName="step"/>
+    </changeSet>
+    <changeSet id="1747307397735-29" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_q_s"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="s_id" baseTableName="quest" constraintName="fk_q_s"
+                                 onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="s_id"
+                                 referencedTableName="step"/>
+    </changeSet>
+    <changeSet id="1747307397735-30" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="admin_process"/>
+            </not>
+        </preConditions>
+            <createTable remarks="Прогресс администратора" tableName="admin_progress" tablespace="advent_dbs">
+                <column name="p_id" remarks="Идентификатор" type="BIGINT">
+                    <constraints nullable="false" primaryKey="true" primaryKeyName="pk_aps"
+                                 primaryKeyTablespace="advent_dbs"/>
+                </column>
+                <column name="aps_data" remarks="Данные" type="JSON"/>
+            </createTable>
+    </changeSet>
+    <changeSet id="1747307397735-32" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_aps_p"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="p_id" baseTableName="admin_progress" constraintName="fk_aps_p"
+                                 onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="p_id"
+                                 referencedTableName="person"/>
+    </changeSet>
+</databaseChangeLog>
