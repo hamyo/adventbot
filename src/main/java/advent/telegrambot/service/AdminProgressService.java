@@ -46,7 +46,7 @@ public class AdminProgressService {
     public @NonNull Long getAdventStepId(long personId) {
         return adminProgressRepository.findById(personId)
                 .map(AdminProgress::getData)
-                .filter(data -> data.getOrDefault(COMMAND_FIELD, "").equals(ADVENTS_STEPS_CREATED))
+                .filter(data -> data.getOrDefault(COMMAND_FIELD, "").equals(ADVENTS_STEPS_CREATED.name()))
                 .map(data -> (Long) data.get(OBJECT_ID_FIELD))
                 .orElseThrow(() -> new AppException("Не удалось найти идентификатор созданного шага"));
     }
@@ -63,7 +63,7 @@ public class AdminProgressService {
     public @NonNull Pair<Integer, Integer> getAdventStepsCreateIds(long personId) {
         return adminProgressRepository.findById(personId)
                 .map(AdminProgress::getData)
-                .filter(data -> data.getOrDefault(COMMAND_FIELD, "").equals(ADVENTS_STEPS_CREATE))
+                .filter(data -> data.getOrDefault(COMMAND_FIELD, "").equals(ADVENTS_STEPS_CREATE.name()))
                 .map(data -> Pair.of(
                         (Integer) data.get(OBJECT_ID_FIELD),
                         (Integer) data.get(QUEST_TYPE_FIELD)))
