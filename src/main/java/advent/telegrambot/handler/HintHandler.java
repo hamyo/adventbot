@@ -10,14 +10,14 @@ import kotlin.Pair;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import static advent.telegrambot.utils.MessageUtils.getHintActionKeyboard;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class HintHandler implements MessageHandler {
     private final TelegramClient telegramClient;
