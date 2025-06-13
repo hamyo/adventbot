@@ -5,7 +5,7 @@ import advent.telegrambot.domain.advent.Advent;
 import advent.telegrambot.repository.StepRepository;
 import advent.telegrambot.service.AdminProgressService;
 import advent.telegrambot.service.AdventService;
-import advent.telegrambot.service.StepCommonService;
+import advent.telegrambot.service.StepCommon;
 import advent.telegrambot.utils.AppException;
 import advent.telegrambot.utils.MessageUtils;
 import advent.telegrambot.utils.NumberUtils;
@@ -21,7 +21,7 @@ public class StepCreateWithoutQuestHandler implements StepCreateHandler {
     private final StepRepository stepRepository;
     private final AdminProgressService adminProgressService;
     private final AdventService adventService;
-    private final StepCommonService stepCommonService;
+    private final StepCommon stepCommon;
 
     @Override
     public boolean canHandle(Integer questType) {
@@ -52,7 +52,7 @@ public class StepCreateWithoutQuestHandler implements StepCreateHandler {
 
         Step step = new Step();
         step.setDay(NumberUtils.parseShort(data[0], "День"));
-        step.setOrder(stepCommonService.getStepOrder(data[1], advent, step.getDay()));
+        step.setOrder(stepCommon.getStepOrder(data[1], advent, step.getDay()));
         if (data.length == 3) {
             step.setText(data[2]);
         }

@@ -9,7 +9,7 @@ import advent.telegrambot.repository.ClsQuestTypeRepository;
 import advent.telegrambot.repository.StepRepository;
 import advent.telegrambot.service.AdminProgressService;
 import advent.telegrambot.service.AdventCurrentStepService;
-import advent.telegrambot.service.StepCommonService;
+import advent.telegrambot.service.StepCommon;
 import advent.telegrambot.service.StepService;
 import advent.telegrambot.utils.AppException;
 import advent.telegrambot.utils.MessageUtils;
@@ -38,7 +38,7 @@ public class QuestBullsAndCowsHandler implements QuestHandler<QuestBullsAndCows>
     private final TelegramClient telegramClient;
     private final StepRepository stepRepository;
     private final AdminProgressService adminProgressService;
-    private final StepCommonService stepCommonService;
+    private final StepCommon stepCommon;
     private final ClsQuestTypeRepository clsQuestTypeRepository;
 
     private final static String GUESS_WORD = "GUESS_WORD";
@@ -219,7 +219,7 @@ public class QuestBullsAndCowsHandler implements QuestHandler<QuestBullsAndCows>
             throw new AppException("Ожидаются данные на " + EXPECTED_ROWS + " строчках");
         }
 
-        Step step = stepCommonService.createStep(data, adventId);
+        Step step = stepCommon.createStep(data, adventId);
         QuestBullsAndCows quest = new QuestBullsAndCows();
         quest.setStep(step);
         step.setQuests(Collections.singletonList(quest));

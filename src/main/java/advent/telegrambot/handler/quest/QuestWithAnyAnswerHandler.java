@@ -2,7 +2,6 @@ package advent.telegrambot.handler.quest;
 
 import advent.telegrambot.classifier.DataType;
 import advent.telegrambot.domain.Step;
-import advent.telegrambot.domain.quest.Quest;
 import advent.telegrambot.domain.quest.QuestWithAnyAnswer;
 import advent.telegrambot.handler.StepCreateHandler;
 import advent.telegrambot.repository.ClsDataTypeRepository;
@@ -10,7 +9,7 @@ import advent.telegrambot.repository.ClsQuestTypeRepository;
 import advent.telegrambot.repository.StepRepository;
 import advent.telegrambot.service.AdminProgressService;
 import advent.telegrambot.service.AdventService;
-import advent.telegrambot.service.StepCommonService;
+import advent.telegrambot.service.StepCommon;
 import advent.telegrambot.service.StepService;
 import advent.telegrambot.utils.AppException;
 import advent.telegrambot.utils.MessageUtils;
@@ -36,7 +35,7 @@ public class QuestWithAnyAnswerHandler implements QuestHandler<QuestWithAnyAnswe
     private final AdventService adventService;
     private final AdminProgressService adminProgressService;
     private final StepRepository stepRepository;
-    private final StepCommonService stepCommonService;
+    private final StepCommon stepCommon;
     private final ClsQuestTypeRepository clsQuestTypeRepository;
 
     private final static int EXPECTED_ROWS = 5;
@@ -105,11 +104,11 @@ public class QuestWithAnyAnswerHandler implements QuestHandler<QuestWithAnyAnswe
             throw new AppException("Ожидаются данные на " + EXPECTED_ROWS + " строчках");
         }
 
-        Step step = stepCommonService.createStep(data, adventId);
+        Step step = stepCommon.createStep(data, adventId);
         QuestWithAnyAnswer quest = new QuestWithAnyAnswer();
         quest.setStep(step);
         step.setQuests(Collections.singletonList(quest));
-        quest.setHints(stepCommonService.parseHints(data[EXPECTED_ROWS - 2], quest));
+        quest.setHints(stepCommon.parseHints(data[EXPECTED_ROWS - 2], quest));
         quest.setAllowedAnswerTypes(DataType.getIdsFromString(data[EXPECTED_ROWS - 1]));
 
         return step;

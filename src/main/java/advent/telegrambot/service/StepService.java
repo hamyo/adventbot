@@ -3,7 +3,6 @@ package advent.telegrambot.service;
 import advent.telegrambot.domain.AdventCurrentStep;
 import advent.telegrambot.domain.Step;
 import advent.telegrambot.domain.advent.Advent;
-import advent.telegrambot.handler.advent.AdventHandlerFactory;
 import advent.telegrambot.repository.AdventCurrentStepRepository;
 import advent.telegrambot.repository.StepRepository;
 import advent.telegrambot.utils.AppException;
@@ -26,7 +25,7 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 public class StepService {
     private final StepRepository stepRepository;
-    private final StepCommonService stepCommonService;
+    private final StepCommon stepCommon;
     private final TelegramClient telegramClient;
     private final AdventCurrentStepRepository adventCurrentStepRepository;
 
@@ -56,7 +55,7 @@ public class StepService {
                 null :
                 MessageUtils.getHintActionKeyboard();
 
-        stepCommonService.sendContentMessage(step.getContent(), advent.getChatId(), markup);
+        stepCommon.sendContentMessage(step.getContent(), advent.getChatId(), markup);
         if (StringUtils.isNoneBlank(step.getText())) {
             SendMessage message = SendMessage // Create a message object
                     .builder()

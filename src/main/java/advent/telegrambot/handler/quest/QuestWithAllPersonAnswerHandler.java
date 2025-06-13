@@ -5,7 +5,6 @@ import advent.telegrambot.classifier.DataType;
 import advent.telegrambot.domain.Person;
 import advent.telegrambot.domain.Step;
 import advent.telegrambot.domain.advent.Advent;
-import advent.telegrambot.domain.quest.Quest;
 import advent.telegrambot.domain.quest.QuestWithAllPersonAnswer;
 import advent.telegrambot.handler.StepCreateHandler;
 import advent.telegrambot.repository.ClsDataTypeRepository;
@@ -46,7 +45,7 @@ public class QuestWithAllPersonAnswerHandler implements QuestHandler<QuestWithAl
     private final AdminProgressService adminProgressService;
     private final AdventService adventService;
     private final StepRepository stepRepository;
-    private final StepCommonService stepCommonService;
+    private final StepCommon stepCommon;
     private final ClsQuestTypeRepository clsQuestTypeRepository;
 
     private final static String ALREADY_ANSWERED_PERSON_IDS = "ALREADY_ANSWERED_PERSON_IDS";
@@ -160,11 +159,11 @@ public class QuestWithAllPersonAnswerHandler implements QuestHandler<QuestWithAl
             throw new AppException("Ожидаются данные на " + EXPECTED_ROWS + " строчках");
         }
 
-        Step step = stepCommonService.createStep(data, adventId);
+        Step step = stepCommon.createStep(data, adventId);
         QuestWithAllPersonAnswer quest = new QuestWithAllPersonAnswer();
         quest.setStep(step);
         step.setQuests(Collections.singletonList(quest));
-        quest.setHints(stepCommonService.parseHints(data[EXPECTED_ROWS - 2], quest));
+        quest.setHints(stepCommon.parseHints(data[EXPECTED_ROWS - 2], quest));
         quest.setAllowedAnswerTypes(DataType.getIdsFromString(data[EXPECTED_ROWS - 1]));
 
         return step;

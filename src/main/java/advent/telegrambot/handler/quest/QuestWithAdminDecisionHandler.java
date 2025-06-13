@@ -2,7 +2,6 @@ package advent.telegrambot.handler.quest;
 
 import advent.telegrambot.domain.Person;
 import advent.telegrambot.domain.Step;
-import advent.telegrambot.domain.quest.Quest;
 import advent.telegrambot.domain.quest.QuestWithAdminDecision;
 import advent.telegrambot.handler.StepCreateHandler;
 import advent.telegrambot.repository.ClsQuestTypeRepository;
@@ -32,7 +31,7 @@ import static advent.telegrambot.utils.MessageUtils.getTelegramUserId;
 @RequiredArgsConstructor
 public class QuestWithAdminDecisionHandler implements QuestHandler<QuestWithAdminDecision>, StepCreateHandler {
     private final StepService stepService;
-    private final StepCommonService stepCommonService;
+    private final StepCommon stepCommon;
     private final TelegramClient telegramClient;
     private final PersonRepository personRepository;
     private final StepRepository stepRepository;
@@ -112,11 +111,11 @@ public class QuestWithAdminDecisionHandler implements QuestHandler<QuestWithAdmi
             throw new AppException("Ожидаются данные на " + EXPECTED_ROWS + " строчках");
         }
 
-        Step step = stepCommonService.createStep(data, adventId);
+        Step step = stepCommon.createStep(data, adventId);
         QuestWithAdminDecision quest = new QuestWithAdminDecision();
         quest.setStep(step);
         step.setQuests(Collections.singletonList(quest));
-        quest.setHints(stepCommonService.parseHints(data[EXPECTED_ROWS - 1], quest));
+        quest.setHints(stepCommon.parseHints(data[EXPECTED_ROWS - 1], quest));
 
         return step;
     }

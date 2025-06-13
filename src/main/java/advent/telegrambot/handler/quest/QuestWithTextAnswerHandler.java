@@ -8,7 +8,7 @@ import advent.telegrambot.repository.ClsQuestTypeRepository;
 import advent.telegrambot.repository.StepRepository;
 import advent.telegrambot.service.AdminProgressService;
 import advent.telegrambot.service.AdventService;
-import advent.telegrambot.service.StepCommonService;
+import advent.telegrambot.service.StepCommon;
 import advent.telegrambot.service.StepService;
 import advent.telegrambot.utils.AppException;
 import advent.telegrambot.utils.MessageUtils;
@@ -37,7 +37,7 @@ public class QuestWithTextAnswerHandler implements QuestHandler<QuestWithTextAns
     private final TelegramClient telegramClient;
     private final StepService stepService;
     private final AdventService adventService;
-    private final StepCommonService stepCommonService;
+    private final StepCommon stepCommon;
     private final AdminProgressService adminProgressService;
     private final StepRepository stepRepository;
     private final ClsQuestTypeRepository clsQuestTypeRepository;
@@ -122,11 +122,11 @@ public class QuestWithTextAnswerHandler implements QuestHandler<QuestWithTextAns
             throw new AppException("Ожидаются данные на " + EXPECTED_ROWS + " строчках");
         }
 
-        Step step = stepCommonService.createStep(data, adventId);
+        Step step = stepCommon.createStep(data, adventId);
         QuestWithTextAnswer quest = new QuestWithTextAnswer();
         quest.setStep(step);
         step.setQuests(Collections.singletonList(quest));
-        quest.setHints(stepCommonService.parseHints(data[EXPECTED_ROWS - 2], quest));
+        quest.setHints(stepCommon.parseHints(data[EXPECTED_ROWS - 2], quest));
         quest.setRightValues(
                 Arrays.stream(
                                 data[EXPECTED_ROWS - 1].split("/|"))

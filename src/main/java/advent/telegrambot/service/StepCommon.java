@@ -7,15 +7,12 @@ import advent.telegrambot.domain.Step;
 import advent.telegrambot.domain.advent.Advent;
 import advent.telegrambot.domain.quest.Quest;
 import advent.telegrambot.repository.StepRepository;
-import advent.telegrambot.utils.AppException;
 import advent.telegrambot.utils.NumberUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendAudio;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.send.SendVideo;
@@ -31,24 +28,22 @@ import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-@Service
+@Component
 @RequiredArgsConstructor
-public class StepCommonService {
+public class StepCommon {
     private final TelegramClient telegramClient;
     private final StepRepository stepRepository;
     private final AdventService adventService;
 
-    @Transactional(readOnly = true)
     public @NonNull Short getStepOrder(String order, @NonNull Advent advent, @NonNull Short day) {
         if (StringUtils.isNotBlank(order)) {
             return NumberUtils.parseShort(order.trim(), "Порядок");
         }
 
-        return (short)(stepRepository.getMaxOrderAtDayByAdvent(advent, day) + 1);
+        return (short) (stepRepository.getMaxOrderAtDayByAdvent(advent, day) + 1);
     }
 
     @SneakyThrows
-    @Transactional(readOnly = true)
     public void sendContentMessage(Content content, long chatId, InlineKeyboardMarkup markup) {
         if (content == null) {
             return;
@@ -97,7 +92,6 @@ public class StepCommonService {
         }
     }
 
-    @Transactional(readOnly = true)
     public Step createStep(String[] data, Integer adventId) {
         Advent advent = adventService.findById(adventId);
 
