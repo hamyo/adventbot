@@ -1,12 +1,12 @@
 package advent.telegrambot.handler;
 
-import advent.telegrambot.domain.AdventCurrentStep;
 import advent.telegrambot.domain.Content;
 import advent.telegrambot.domain.Hint;
-import advent.telegrambot.service.*;
+import advent.telegrambot.service.HintService;
+import advent.telegrambot.service.PersonService;
+import advent.telegrambot.service.StepCommon;
 import advent.telegrambot.utils.MessageUtils;
 import kotlin.Pair;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
@@ -15,8 +15,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
-import java.util.Map;
-
 import static advent.telegrambot.utils.MessageUtils.getHintActionKeyboard;
 
 @Service
@@ -24,8 +22,6 @@ import static advent.telegrambot.utils.MessageUtils.getHintActionKeyboard;
 public class HintHandler implements MessageHandler {
     private final TelegramClient telegramClient;
     private final PersonService personService;
-    private final AdventService adventService;
-    private final AdventCurrentStepService adventCurrentStepService;
     private final StepCommon stepCommon;
     private final HintService hintService;
 
