@@ -6,7 +6,7 @@ import advent.telegrambot.service.PersonService;
 import advent.telegrambot.utils.MessageUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -14,7 +14,7 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import static advent.telegrambot.handler.TelegramCommand.ADMIN_CLEAR;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class AdminProgressClearHandler implements MessageHandler {
     private final TelegramClient telegramClient;
