@@ -92,7 +92,12 @@ public enum TelegramCommand {
             throw new UnsupportedOperationException("Not supported");
         }
 
-        return Integer.parseInt(regexPattern.matcher(inAction).group(1));
+        Matcher matcher = regexPattern.matcher(inAction);
+        if (matcher.matches()) {
+            return Integer.parseInt(matcher.group(1));
+        } else {
+            throw new IllegalArgumentException("inAction=" + inAction + " not matches regexPattern=" + regexPattern.pattern());
+        }
     }
 
     public static String getAdventPersonCommand(@NonNull Integer adventId) {

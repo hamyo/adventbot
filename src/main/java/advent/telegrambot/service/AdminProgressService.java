@@ -52,6 +52,14 @@ public class AdminProgressService {
     }
 
     @Transactional(readOnly = true)
+    public @NonNull Integer getAdventId(long personId) {
+        return adminProgressRepository.findById(personId)
+                .map(AdminProgress::getData)
+                .map(data -> (Integer) data.get(OBJECT_ID_FIELD))
+                .orElseThrow(() -> new AppException("Не удалось найти идентификатор"));
+    }
+
+    @Transactional(readOnly = true)
     public @NonNull Pair<Integer, Integer> getAdventStepsCreateIds(long personId) {
         return adminProgressRepository.findById(personId)
                 .map(AdminProgress::getData)

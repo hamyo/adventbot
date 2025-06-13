@@ -14,6 +14,7 @@ import advent.telegrambot.utils.MessageUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -26,7 +27,7 @@ import java.util.List;
 import static advent.telegrambot.handler.TelegramCommand.ADVENTS_PERSONS;
 import static advent.telegrambot.utils.MessageUtils.getTelegramUserId;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class AdventPersonsPostHandler implements MessageHandler {
     private final PersonService personService;
@@ -62,28 +63,26 @@ public class AdventPersonsPostHandler implements MessageHandler {
                                 person.setNameNominative(personData[1].trim());
                                 return person;
                             })
-                            .orElseGet(() -> new Person(personId, personData[1].trim()));
-
+                            .orElseGet(() -> {
+                                Person person = new Person(personId, personData[1].trim());
+                                personRepository.save(person);
+                                return person;
+                            });
                 })
                 .toList();
     }
 
     @SneakyThrows
     @Override
-    @Transactional
     public void handle(Update update) {
         long personId = getTelegramUserId(update);
-        Integer adventId = ADVENTS_PERSONS.getIdFromAction(MessageUtils.getMessageText(update));
-        if (adventId == null) {
-            throw new AppException("Не удалось получить id адвента из команды");
-        }
+        Integer adventId = adminProgressService.getAdventId(personId);
         List<Person> persons = createPersons(update.getMessage().getText());
-        Advent advent = adventService.findById(adventId);
-        advent.getPersons().addAll(persons);
+        personService.save(persons, adventId);
         adminProgressService.delete(personId);
         SendMessage response = SendMessage.builder()
                 .chatId(MessageUtils.getChatId(update))
-                .text("Участники (количество " + persons.size() + ") успешно добавлены")
+                .text("Участники (количество " + persons.size() + ") успешно добавлены или обновлены")
                 .replyMarkup(adventHandlerFactory.getAdminKeyboard(adventService.findById(adventId)))
                 .build();
         telegramClient.executeAsync(response);

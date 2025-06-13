@@ -29,7 +29,6 @@ dependencies {
 	implementation group: 'org.telegram', name: 'telegrambots-client', version: '8.3.0'
 	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.17.0'
 	implementation group: 'commons-io', name: 'commons-io', version: '2.19.0'
-	implementation 'org.apache.httpcomponents.client5:httpclient5:5.4.4'
 	implementation 'org.liquibase:liquibase-core'
 	compileOnly 'org.projectlombok:lombok'
 	//developmentOnly 'org.springframework.boot:spring-boot-docker-compose'

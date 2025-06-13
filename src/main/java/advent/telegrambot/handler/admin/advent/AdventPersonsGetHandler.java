@@ -29,14 +29,14 @@ public class AdventPersonsGetHandler implements MessageHandler {
     @SneakyThrows
     @Override
     public void handle(Update update) {
-        adminProgressService.save(getTelegramUserId(update), ADVENTS_PERSONS);
         Integer adventId = ADVENTS_PERSONS.getIdFromAction(MessageUtils.getMessageText(update));
+        adminProgressService.save(getTelegramUserId(update), ADVENTS_PERSONS, adventId);
 
         SendMessage response = SendMessage.builder()
                 .chatId(MessageUtils.getChatId(update))
                 .text("""
-                        Для добавления участников в адвент, введите его id из телеграмма и имя в именительном падеже. 
-                        Каждого нового участника укажите на новой строчке.
+                        Для обновления участников адвента, введите его id из телеграмма и имя в именительном падеже.
+                        Каждого нового участника укажите на новой строчке. Укажите всех участников - неуказанные (если они связаны с адвентом) будут удалены из адвента.
                         Пример,
                         124578 Костя
                         1261444 Маша
