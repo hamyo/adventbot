@@ -12,8 +12,7 @@
         </preConditions>
         <createTable remarks="Участники" tableName="person" tablespace="advent_dbs">
             <column name="p_id" remarks="Идентификатор" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_p"
-                             primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_p" primaryKeyTablespace="advent_dbs"/>
             </column>
             <column defaultValueBoolean="false" name="p_is_admin" remarks="Признак админа" type="BOOLEAN">
                 <constraints nullable="false"/>
@@ -54,7 +53,7 @@
         </preConditions>
         <createTable remarks="Контент" tableName="content">
             <column autoIncrement="true" name="cn_id" remarks="Идентификатор" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cn"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cn" primaryKeyTablespace="advent_dbs"/>
             </column>
             <column name="cdt_id" remarks="Тип данных" type="SMALLINT">
                 <constraints nullable="false"/>
@@ -74,7 +73,7 @@
         </preConditions>
         <createTable remarks="Шаг" tableName="step">
             <column autoIncrement="true" name="s_id" remarks="Идентификатор" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_s"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_s" primaryKeyTablespace="advent_dbs"/>
             </column>
             <column name="s_order" remarks="Порядок" type="SMALLINT">
                 <constraints nullable="false" checkConstraint="s_order > 0"/>
@@ -97,7 +96,7 @@
         </preConditions>
         <createTable remarks="Подсказка" tableName="hint">
             <column autoIncrement="true" name="h_id" remarks="Идентификатор" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_h"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_h" primaryKeyTablespace="advent_dbs"/>
             </column>
             <column name="h_text" remarks="Текст" type="TEXT"/>
             <column name="cn_id" remarks="Контент" type="BIGINT"/>
@@ -114,7 +113,7 @@
         </preConditions>
         <createTable remarks="Задание" tableName="quest">
             <column autoIncrement="true" name="q_id" remarks="Идентификатор" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_q"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_q" primaryKeyTablespace="advent_dbs"/>
             </column>
             <column name="cqt_id" remarks="Тип задания" type="INTEGER">
                 <constraints nullable="false"/>
@@ -162,12 +161,10 @@
         </preConditions>
         <createTable remarks="Связь участника и адвента" tableName="advent_person" tablespace="advent_dbs">
             <column name="a_id" remarks="Идентификатор адвента" type="INTEGER">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ap"
-                             primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ap" primaryKeyTablespace="advent_dbs"/>
             </column>
             <column name="p_id" remarks="Идентификатор участника" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ap"
-                             primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ap" primaryKeyTablespace="advent_dbs"/>
             </column>
         </createTable>
     </changeSet>
@@ -203,8 +200,7 @@
         </preConditions>
         <createTable remarks="Тип адвента" tableName="cls_advent_type" tablespace="advent_dbs">
             <column name="cat_id" remarks="Идентификатор" type="INTEGER">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cat"
-                             primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cat" primaryKeyTablespace="advent_dbs"/>
             </column>
             <column name="cat_name" remarks="Наименование" type="VARCHAR(50)">
                 <constraints nullable="false"/>
@@ -219,8 +215,7 @@
         </preConditions>
         <createTable remarks="Тип данных" tableName="cls_data_type" tablespace="advent_dbs">
             <column name="cdt_id" remarks="Идентификатор" type="SMALLINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cdt"
-                             primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cdt" primaryKeyTablespace="advent_dbs"/>
             </column>
             <column name="cdt_name" remarks="Наименование" type="VARCHAR(30)">
                 <constraints nullable="false"/>
@@ -236,8 +231,7 @@
         </preConditions>
         <createTable remarks="Тип задания" tableName="cls_quest_type" tablespace="advent_dbs">
             <column name="cqt_id" remarks="Идентификатор" type="INTEGER">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cqt"
-                             primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cqt" primaryKeyTablespace="advent_dbs"/>
             </column>
             <column name="cqt_name" remarks="Наименование" type="VARCHAR(100)">
                 <constraints nullable="false"/>
@@ -255,12 +249,10 @@
         </preConditions>
         <createTable remarks="Код" tableName="code" tablespace="advent_dbs">
             <column name="a_id" remarks="Идентификатор" type="INTEGER">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_c"
-                             primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_c" primaryKeyTablespace="advent_dbs"/>
             </column>
             <column name="c_value" remarks="Значение" type="VARCHAR(40)">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_c"
-                             primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_c" primaryKeyTablespace="advent_dbs"/>
             </column>
         </createTable>
     </changeSet>

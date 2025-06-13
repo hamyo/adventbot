@@ -28,7 +28,7 @@
         </preConditions>
         <insert tableName="cls_quest_type" >
             <column name="cqt_id" value="1"/>
-            <column name="cqt_name" value="Решение за адмипнистратором"/>
+            <column name="cqt_name" value="Решение за администратором"/>
             <column name="cqt_description" value="Задача, где решение о выполнении принимает администратор"/>
         </insert>
     </changeSet>
