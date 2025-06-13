@@ -10,6 +10,7 @@ import advent.telegrambot.utils.MessageUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -19,7 +20,7 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 import static advent.telegrambot.handler.TelegramCommand.ADVENTS_STEPS_CREATE;
 import static advent.telegrambot.utils.MessageUtils.getTelegramUserId;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class AdventStepsCreatePostHandler implements MessageHandler {
     private final TelegramClient telegramClient;
