@@ -19,15 +19,19 @@ import java.util.Map;
 public class HintService {
     private final AdventCurrentStepService adventCurrentStepService;
     private final AdventService adventService;
+
     private final static String SHOWED_HINT_ID = "SHOWED_HINT_ID";
 
     private @NonNull Long getShowedHintId(@NonNull Map<String, Object> data) {
         return (Long) data.getOrDefault(SHOWED_HINT_ID, -1L);
     }
 
-    private void saveShowedHintId(@NonNull AdventCurrentStep currentStep, @NonNull Long showedHintId) {
+    @Transactional
+    public void saveShowedHintId(@NonNull Long chatId, @NonNull Long hintId) {
+        Advent advent = adventService.findByChatId(chatId);
+        AdventCurrentStep currentStep = adventCurrentStepService.findById(advent.getId());
         Map<String, Object> data = currentStep.getData();
-        data.put(SHOWED_HINT_ID, showedHintId);
+        data.put(SHOWED_HINT_ID, hintId);
         adventCurrentStepService.save(currentStep);
     }
 
