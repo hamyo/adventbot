@@ -4,7 +4,6 @@ import advent.telegrambot.domain.advent.Advent;
 import advent.telegrambot.domain.dto.CheckError;
 import advent.telegrambot.handler.MessageHandler;
 import advent.telegrambot.handler.advent.AdventHandlerFactory;
-import advent.telegrambot.repository.ClsQuestTypeRepository;
 import advent.telegrambot.repository.StepRepository;
 import advent.telegrambot.service.AdventFullInfoService;
 import advent.telegrambot.service.AdventService;
@@ -35,7 +34,6 @@ public class AdventFullInfoHandler implements MessageHandler {
     private final AdventService adventService;
     private final AdventFullInfoService adventFullInfoService;
     private final StepRepository stepRepository;
-    private final ClsQuestTypeRepository clsQuestTypeRepository;
     private final AdventHandlerFactory adventHandlerFactory;
 
     @SneakyThrows
