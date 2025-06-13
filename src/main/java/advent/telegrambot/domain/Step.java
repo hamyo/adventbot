@@ -21,6 +21,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class Step {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "s_id", nullable = false)
     private java.lang.Long id;
 
