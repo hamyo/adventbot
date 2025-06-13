@@ -38,10 +38,10 @@ public class AdventNotFinishedHandler implements MessageHandler {
         String message = adventInfo.stream()
                 .map(advent -> String.format(
                         "%s id=%s, дата начала '%s', кол-во дней %s",
-                        advent.type(),
-                        advent.id(),
-                        advent.startDate().format(DateUtils.getRusDateFormatter()),
-                        advent.daysCount()))
+                        advent.getType(),
+                        advent.getId(),
+                        advent.getStartDate().format(DateUtils.getRusDateFormatter()),
+                        advent.getDaysCount()))
                 .collect(Collectors.joining("\n\n"));
 
         SendMessage response = SendMessage.builder()
@@ -60,9 +60,9 @@ public class AdventNotFinishedHandler implements MessageHandler {
                                 InlineKeyboardButton.builder()
                                         .text(String.format(
                                                 "%s %s дней",
-                                                advent.startDate().format(DateUtils.getRusDateFormatter()),
-                                                advent.daysCount()))
-                                        .callbackData(TelegramCommand.getEditCommand(advent.id()))
+                                                advent.getStartDate().format(DateUtils.getRusDateFormatter()),
+                                                advent.getDaysCount()))
+                                        .callbackData(TelegramCommand.getEditCommand(advent.getId()))
                                         .build()))
                 ).toList();
 

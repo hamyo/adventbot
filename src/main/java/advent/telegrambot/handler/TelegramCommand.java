@@ -121,10 +121,17 @@ public enum TelegramCommand {
                 (questTypeId == null ? "" : COMMAND_SEPARATOR + "questTypeId=" + questTypeId);
     }
 
-    public static @NonNull Pair<Integer, Integer> getIdsFromStepCreateCommand(@NonNull String action) {
-        Matcher matcher = TelegramCommand.ADVENTS_STEPS_CREATE.regexPattern.matcher(action);
-        return Pair.of(
-                Integer.parseInt(matcher.group(1)),
-                matcher.groupCount() == 2 ? null : Integer.parseInt(matcher.group(2)));
+    public static @NonNull Pair<Integer, Integer> getIdsFromStepCreateCommand(@NonNull String inAction) {
+        Matcher matcher = TelegramCommand.ADVENTS_STEPS_CREATE.regexPattern.matcher(inAction);
+        if (matcher.matches()) {
+            return Pair.of(
+                    Integer.parseInt(matcher.group(1)),
+                    matcher.groupCount() == 2 ? null : Integer.parseInt(matcher.group(2)));
+        } else {
+            throw new IllegalArgumentException("inAction=" +
+                    inAction +
+                    " not matches regexPattern=" +
+                    TelegramCommand.ADVENTS_STEPS_CREATE.regexPattern.pattern());
+        }
     }
 }
