@@ -46,13 +46,13 @@ public class StepCreateWithoutQuestHandler implements StepCreateHandler {
         }
 
         String[] data = input.split("\n");
-        if (data.length != 2 && data.length != 3) {
-            throw new AppException("Ожидаются данные на 2 или 3 строчках");
+        if (data.length < 1 || data.length > 3) {
+            throw new AppException("Ожидаются данные на одной, двух или трёх строчках");
         }
 
         Step step = new Step();
         step.setDay(NumberUtils.parseShort(data[0], "День"));
-        step.setOrder(stepCommon.getStepOrder(data[1], advent, step.getDay()));
+        step.setOrder(stepCommon.getStepOrder(data.length > 1 ? data[1] : null, advent, step.getDay()));
         if (data.length == 3) {
             step.setText(data[2]);
         }
