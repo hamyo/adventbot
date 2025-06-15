@@ -25,6 +25,7 @@ import java.util.Set;
 @DiscriminatorColumn(name = "cqt_id", discriminatorType = DiscriminatorType.INTEGER)
 public abstract class Quest {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "q_id", nullable = false)
     private Long id;
 

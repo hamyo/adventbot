@@ -24,6 +24,5 @@ public class AdminProgress {
 
     @Column(name = "aps_data")
     @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> data = new HashMap<>();
-
+    private Map<String, String> data = new HashMap<>();
 }

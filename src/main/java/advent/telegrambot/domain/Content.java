@@ -17,6 +17,7 @@ import java.util.function.Supplier;
 @NoArgsConstructor
 public class Content {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cn_id", nullable = false)
     private Long id;
 

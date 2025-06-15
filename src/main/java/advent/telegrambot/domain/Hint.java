@@ -15,6 +15,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @NoArgsConstructor
 public class Hint {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "h_id", nullable = false)
     private Long id;
 

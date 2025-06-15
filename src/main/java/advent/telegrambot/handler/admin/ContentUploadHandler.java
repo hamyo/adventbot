@@ -8,6 +8,7 @@ import advent.telegrambot.handler.TelegramCommand;
 import advent.telegrambot.repository.ClsQuestTypeRepository;
 import advent.telegrambot.repository.StepRepository;
 import advent.telegrambot.service.AdminProgressService;
+import advent.telegrambot.service.ContentService;
 import advent.telegrambot.service.PersonService;
 import advent.telegrambot.service.StepService;
 import advent.telegrambot.utils.AppException;
@@ -26,26 +27,22 @@ public class ContentUploadHandler implements MessageHandler {
     private final AdminProgressService adminProgressService;
     private final PersonService personService;
     private final TelegramClient telegramClient;
-    private final StepService stepService;
+    private final ContentService contentService;
     private final FileHelper fileHelper;
     private final ClsQuestTypeRepository clsQuestTypeRepository;
-    private final StepRepository stepRepository;
 
     @Override
     public void handle(Update update) {
         long personId = MessageUtils.getTelegramUserId(update);
         fileHelper.getContent(update).ifPresentOrElse(
                 (content) -> {
-                    Long stepId = adminProgressService.getAdventStepId(personId);
-                    Step step = stepService.getById(stepId);
-                    step.setContent(content);
-                    stepRepository.save(step);
+                    Integer adventId = contentService.saveStepContent(personId, content);
                     SendMessage response = SendMessage.builder()
                             .chatId(MessageUtils.getChatId(update))
                             .text("Контент успешно добавлен к шагу")
                             .replyMarkup(
                                     MessageUtils.getStepActionKeyboard(
-                                            step.getAdvent().getId(),
+                                            adventId,
                                             clsQuestTypeRepository.findAll()))
                             .build();
                     try {

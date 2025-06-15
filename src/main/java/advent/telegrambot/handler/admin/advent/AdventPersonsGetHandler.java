@@ -30,7 +30,7 @@ public class AdventPersonsGetHandler implements MessageHandler {
     @Override
     public void handle(Update update) {
         Integer adventId = ADVENTS_PERSONS.getIdFromAction(MessageUtils.getMessageText(update));
-        adminProgressService.save(getTelegramUserId(update), ADVENTS_PERSONS, adventId);
+        adminProgressService.saveAdventId(getTelegramUserId(update), adventId);
 
         SendMessage response = SendMessage.builder()
                 .chatId(MessageUtils.getChatId(update))
