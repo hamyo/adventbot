@@ -61,12 +61,20 @@ public enum TelegramCommand {
     }
 
     private boolean isMatch(String actionName) {
+        if (actionName == null) {
+            return false;
+        }
         return (regexPattern == null && equalsIgnoreCase(action, actionName)) ||
                 (regexPattern != null && regexPattern.matcher(actionName).matches());
     }
 
     public boolean is(Update update) {
-        String actionName = StringUtils.substringBefore(MessageUtils.getMessageText(update), COMMAND_SEPARATOR);
+        String messageText = MessageUtils.getMessageText(update);
+        if (StringUtils.isBlank(messageText)) {
+            return false;
+        }
+
+        String actionName = StringUtils.substringBefore(messageText, COMMAND_SEPARATOR);
         return isMatch(actionName);
     }
 
