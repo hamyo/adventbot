@@ -58,6 +58,7 @@ public class StepCreateWithoutQuestHandler implements StepCreateHandler {
         }
 
         step.setAdvent(advent);
+        stepCommon.check(step);
         return step;
     }
 

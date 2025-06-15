@@ -17,6 +17,10 @@ public interface StepRepository extends JpaRepository<Step, Long> {
             Short day,
             Short minOrder);
 
+    Optional<Step> findFirstByAdventAndDayAndOrder(Advent advent,
+                                                   Short day,
+                                                   Short order);
+
     List<Step> findByAdventAndDayAndOrderGreaterThanOrderByOrderAsc(
             Advent advent,
             Short day,

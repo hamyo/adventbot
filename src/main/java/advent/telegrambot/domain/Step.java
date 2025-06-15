@@ -44,7 +44,7 @@ public class Step {
     @JoinColumn(name = "a_id", nullable = false)
     private Advent advent;
 
-    @OneToMany(mappedBy = "step")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "step", fetch = FetchType.LAZY)
     private List<Quest> quests = new ArrayList<>();
 
     @Transient

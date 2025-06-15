@@ -407,4 +407,12 @@
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="p_id"
                                  referencedTableName="person"/>
     </changeSet>
+    <changeSet id="1747307397735-33" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="ak_s"/>
+            </not>
+        </preConditions>
+        <addUniqueConstraint tableName="step" columnNames="a_id, s_day, s_order" constraintName="ak_s" tablespace="advent_dbs"/>
+    </changeSet>
 </databaseChangeLog>

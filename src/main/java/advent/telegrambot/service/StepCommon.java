@@ -7,6 +7,7 @@ import advent.telegrambot.domain.Step;
 import advent.telegrambot.domain.advent.Advent;
 import advent.telegrambot.domain.quest.Quest;
 import advent.telegrambot.repository.StepRepository;
+import advent.telegrambot.utils.AppException;
 import advent.telegrambot.utils.NumberUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -92,6 +94,13 @@ public class StepCommon {
         }
     }
 
+    public void check(Step step) {
+        Optional<Step> otherStep = stepRepository.findFirstByAdventAndDayAndOrder(step.getAdvent(), step.getDay(), step.getOrder());
+        if (otherStep.isPresent()) {
+            throw new AppException("Для данного адвента в день " + step.getDay()  + " уже есть шаг с порядком " + step.getOrder());
+        }
+    }
+
     public Step createStep(String[] data, Integer adventId) {
         Advent advent = adventService.findById(adventId);
 
@@ -103,6 +112,7 @@ public class StepCommon {
         }
 
         step.setAdvent(advent);
+        check(step);
         return step;
     }
 
