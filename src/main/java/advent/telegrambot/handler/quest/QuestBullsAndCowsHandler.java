@@ -1,16 +1,13 @@
 package advent.telegrambot.handler.quest;
 
+import advent.telegrambot.classifier.QuestType;
 import advent.telegrambot.domain.AdventCurrentStep;
 import advent.telegrambot.domain.Step;
 import advent.telegrambot.domain.advent.Advent;
 import advent.telegrambot.domain.quest.QuestBullsAndCows;
 import advent.telegrambot.handler.StepCreateHandler;
-import advent.telegrambot.repository.ClsQuestTypeRepository;
 import advent.telegrambot.repository.StepRepository;
-import advent.telegrambot.service.AdminProgressService;
-import advent.telegrambot.service.AdventCurrentStepService;
-import advent.telegrambot.service.StepCommon;
-import advent.telegrambot.service.StepService;
+import advent.telegrambot.service.*;
 import advent.telegrambot.utils.AppException;
 import advent.telegrambot.utils.MessageUtils;
 import lombok.NonNull;
@@ -27,7 +24,7 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import java.util.*;
 
-import static advent.telegrambot.classifier.QuestType.ANY_ANSWER;
+import static advent.telegrambot.classifier.QuestType.BULLS_AND_COWS;
 import static advent.telegrambot.utils.MessageUtils.getTelegramUserId;
 
 @Service
@@ -39,11 +36,12 @@ public class QuestBullsAndCowsHandler implements QuestHandler<QuestBullsAndCows>
     private final StepRepository stepRepository;
     private final AdminProgressService adminProgressService;
     private final StepCommon stepCommon;
-    private final ClsQuestTypeRepository clsQuestTypeRepository;
+    private final ClsQuestTypeService clsQuestTypeService;
 
     private final static String GUESS_WORD = "GUESS_WORD";
     private final static String NUMBER_OF_ATTEMPTS = "NUMBER_OF_ATTEMPTS";
     private final static int EXPECTED_ROWS = 3;
+
 
     private int getNumberOfAttempts(Map<String, Object> data) {
         return (int) data.getOrDefault(NUMBER_OF_ATTEMPTS, 0);
@@ -181,22 +179,30 @@ public class QuestBullsAndCowsHandler implements QuestHandler<QuestBullsAndCows>
         return result;
     }
 
+    private QuestType getQuestType() {
+        return BULLS_AND_COWS;
+    }
+
     @Override
     public boolean canHandle(Integer questType) {
-        return ANY_ANSWER.is(questType);
+        return getQuestType().is(questType);
     }
 
     @Override
     @Transactional(readOnly = true)
     public String getMessageForCreate() {
-        return """
-                Для добавления создания шага введите день, порядок шага (оставьте строку пустой - порядок будет максимальный в рамках дня), текст без переносов строки (если не нужен, то оставьте пустую строку).
-                Каждые новые данные вводятся с новой строки. Порядок важен.
-                Пример,
-                1
-                1
-                Привет, это игра быки и коровы. Тебе нужно угадать число из 4 неповторяющихся цифр. Если угадал цифру, но не угадал её позицию, то это корова. Если угадал и цифру, и позицию - то это бык.'.
-                """;
+        String questType = clsQuestTypeService.getQuestTypeName(getQuestType().getId());
+        return "Для добавления шага (" + questType + ") введите:\n" +
+                """
+                        день,
+                        порядок шага (оставьте строку пустой - порядок будет максимальный в рамках дня),
+                        текст без переносов строки (если не нужен, то оставьте пустую строку).
+                        Каждые новые данные вводятся с новой строки. Порядок важен.
+                        Пример,
+                        1
+                        1
+                        Привет, это игра быки и коровы. Тебе нужно угадать число из 4 неповторяющихся цифр. Если угадал цифру, но не угадал её позицию, то это корова. Если угадал и цифру, и позицию - то это бык.'.
+                        """;
     }
 
     @Override

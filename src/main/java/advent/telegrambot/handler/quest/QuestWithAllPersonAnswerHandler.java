@@ -1,18 +1,15 @@
 package advent.telegrambot.handler.quest;
 
 import advent.telegrambot.classifier.DataType;
+import advent.telegrambot.classifier.QuestType;
 import advent.telegrambot.domain.AdventCurrentStep;
 import advent.telegrambot.domain.Person;
 import advent.telegrambot.domain.Step;
 import advent.telegrambot.domain.advent.Advent;
 import advent.telegrambot.domain.quest.QuestWithAllPersonAnswer;
 import advent.telegrambot.handler.StepCreateHandler;
-import advent.telegrambot.repository.ClsDataTypeRepository;
 import advent.telegrambot.repository.StepRepository;
-import advent.telegrambot.service.AdminProgressService;
-import advent.telegrambot.service.AdventCurrentStepService;
-import advent.telegrambot.service.StepCommon;
-import advent.telegrambot.service.StepService;
+import advent.telegrambot.service.*;
 import advent.telegrambot.utils.AppException;
 import advent.telegrambot.utils.MessageUtils;
 import lombok.NonNull;
@@ -43,10 +40,11 @@ public class QuestWithAllPersonAnswerHandler implements QuestHandler<QuestWithAl
     private final TelegramClient telegramClient;
     private final AdventCurrentStepService adventCurrentStepService;
     private final StepService stepService;
-    private final ClsDataTypeRepository clsDataTypeRepository;
+    private final ClsDataTypeService clsDataTypeService;
     private final AdminProgressService adminProgressService;
     private final StepRepository stepRepository;
     private final StepCommon stepCommon;
+    private final ClsQuestTypeService clsQuestTypeService;
 
     private final static String ALREADY_ANSWERED_PERSON_IDS = "ALREADY_ANSWERED_PERSON_IDS";
     private final static int EXPECTED_ROWS = 5;
@@ -114,28 +112,39 @@ public class QuestWithAllPersonAnswerHandler implements QuestHandler<QuestWithAl
         return QuestWithAllPersonAnswer.class;
     }
 
+    private QuestType getQuestType() {
+        return ALL_PERSON_ANSWER;
+    }
+
     @Override
     public boolean canHandle(Integer questType) {
-        return ALL_PERSON_ANSWER.is(questType);
+        return getQuestType().is(questType);
     }
 
     @Override
     @Transactional(readOnly = true)
     public String getMessageForCreate() {
-        String dataTypeDescription = clsDataTypeRepository.findAll().stream()
-                .map(dataType -> String.format("%s (%s)", dataType.getId(), dataType.getName()))
-                .collect(Collectors.joining(",", "(", ")"));
-        return "Для добавления создания шага введите день, порядок шага (оставьте строку пустой - порядок будет максимальный в рамках дня), текст без переносов строки (если он нужен, если не нужен, то оставьте пустую строку), " +
-                "подсказки на одной строчке, разделенные знаком | (если не нужны, то оставьте пустую строку), " +
-                "идентификаторы возможных типов данных ответа, разделенные знаком | " +
+        String questType = clsQuestTypeService.getQuestTypeName(getQuestType().getId());
+        String dataTypeDescription = clsDataTypeService.getAllDataTypeDescription();
+        return "Для добавления шага (" + questType + ") введите:\n +" +
+                """
+                        день,
+                        порядок шага (оставьте строку пустой - порядок будет максимальный в рамках дня),
+                        текст без переносов строки (если он нужен, если не нужен, то оставьте пустую строку),
+                        подсказки на одной строчке, разделенные знаком | (если не нужны, то оставьте пустую строку),
+                        идентификаторы возможных типов данных ответа, разделенные знаком |
+                        """ +
                 dataTypeDescription +
-                ". Каждые новые данные вводятся с новой строки. Порядок важен.\n" +
-                "Пример,\n" +
-                "1\n" +
-                "1\n" +
-                "Привет, нарисуй новогоднюю открытку и пришли её фотографию\n" +
-                "\n" +
-                "1"
+                """
+                        .
+                        Каждые новые данные вводятся с новой строки. Порядок важен.
+                        "Пример,
+                        1
+                        1
+                        Привет, нарисуй новогоднюю открытку и пришли её фотографию
+                        
+                        1
+                        """
                 ;
     }
 

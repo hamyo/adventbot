@@ -1,13 +1,13 @@
 package advent.telegrambot.handler.quest;
 
+import advent.telegrambot.classifier.QuestType;
 import advent.telegrambot.domain.Step;
 import advent.telegrambot.domain.advent.Advent;
 import advent.telegrambot.domain.quest.QuestWithTextAnswer;
 import advent.telegrambot.handler.StepCreateHandler;
-import advent.telegrambot.repository.ClsQuestTypeRepository;
 import advent.telegrambot.repository.StepRepository;
 import advent.telegrambot.service.AdminProgressService;
-import advent.telegrambot.service.AdventService;
+import advent.telegrambot.service.ClsQuestTypeService;
 import advent.telegrambot.service.StepCommon;
 import advent.telegrambot.service.StepService;
 import advent.telegrambot.utils.AppException;
@@ -36,11 +36,10 @@ import static advent.telegrambot.utils.MessageUtils.getTelegramUserId;
 public class QuestWithTextAnswerHandler implements QuestHandler<QuestWithTextAnswer>, StepCreateHandler {
     private final TelegramClient telegramClient;
     private final StepService stepService;
-    private final AdventService adventService;
     private final StepCommon stepCommon;
     private final AdminProgressService adminProgressService;
     private final StepRepository stepRepository;
-    private final ClsQuestTypeRepository clsQuestTypeRepository;
+    private final ClsQuestTypeService clsQuestTypeService;
 
     private final int EXPECTED_ROWS = 5;
 
@@ -82,24 +81,34 @@ public class QuestWithTextAnswerHandler implements QuestHandler<QuestWithTextAns
         return QuestWithTextAnswer.class;
     }
 
+    private QuestType getQuestType() {
+        return TEXT_ANSWER;
+    }
+
     @Override
     public boolean canHandle(Integer questType) {
-        return TEXT_ANSWER.is(questType);
+        return getQuestType().is(questType);
     }
 
     @Override
     @Transactional(readOnly = true)
     public String getMessageForCreate() {
-        return """
-                Для добавления создания шага введите день, порядок шага (оставьте строку пустой - порядок будет максимальный в рамках дня), текст без переносов строки (если не нужен, то оставьте пустую строку), подсказки на одной строчке, разделенные знаком | (если не нужны, то оставьте пустую строку), возможные правильные варианты ответа на одной строчке, разделенные знаком |.
-                Каждые новые данные вводятся с новой строки. Порядок важен.
-                Пример,
-                1
-                1
-                Привет, угадай новогодний фильм по звуковому фрагменту.
-                Главный герой фильма зелёный, но не ёлка|Главный герой ненавидит бритву
-                Гринч – похититель Рождества|Гринч
-                """;
+        String questType = clsQuestTypeService.getQuestTypeName(getQuestType().getId());
+        return "Для добавления шага (" + questType + ") введите:\n" +
+                """
+                        день,
+                        порядок шага (оставьте строку пустой - порядок будет максимальный в рамках дня),
+                        текст без переносов строки (если не нужен, то оставьте пустую строку),
+                        подсказки на одной строчке, разделенные знаком | (если не нужны, то оставьте пустую строку),
+                        возможные правильные варианты ответа на одной строчке, разделенные знаком |.
+                        Каждые новые данные вводятся с новой строки. Порядок важен.
+                        Пример,
+                        1
+                        1
+                        Привет, угадай новогодний фильм по звуковому фрагменту.
+                        Главный герой фильма зелёный, но не ёлка|Главный герой ненавидит бритву
+                        Гринч – похититель Рождества|Гринч
+                        """;
     }
 
     @Override

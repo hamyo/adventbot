@@ -1,5 +1,6 @@
 package advent.telegrambot.handler.quest;
 
+import advent.telegrambot.classifier.QuestType;
 import advent.telegrambot.domain.Person;
 import advent.telegrambot.domain.Step;
 import advent.telegrambot.domain.quest.QuestWithAdminDecision;
@@ -7,6 +8,7 @@ import advent.telegrambot.handler.StepCreateHandler;
 import advent.telegrambot.repository.PersonRepository;
 import advent.telegrambot.repository.StepRepository;
 import advent.telegrambot.service.AdminProgressService;
+import advent.telegrambot.service.ClsQuestTypeService;
 import advent.telegrambot.service.StepCommon;
 import advent.telegrambot.service.StepService;
 import advent.telegrambot.utils.AppException;
@@ -37,6 +39,7 @@ public class QuestWithAdminDecisionHandler implements QuestHandler<QuestWithAdmi
     private final PersonRepository personRepository;
     private final StepRepository stepRepository;
     private final AdminProgressService adminProgressService;
+    private final ClsQuestTypeService clsQuestTypeService;
 
     private final static int EXPECTED_ROWS = 4;
 
@@ -72,22 +75,30 @@ public class QuestWithAdminDecisionHandler implements QuestHandler<QuestWithAdmi
         return QuestWithAdminDecision.class;
     }
 
+    private QuestType getQuestType() {
+        return ADMIN_DECISION;
+    }
+
     @Override
     public boolean canHandle(Integer questType) {
-        return ADMIN_DECISION.is(questType);
+        return getQuestType().is(questType);
     }
 
     @Override
     public String getMessageForCreate() {
-        return """
-                Для добавления создания шага введите день, порядок шага (оставьте строку пустой - порядок будет максимальный в рамках дня), текст без переносов строки (если не нужен, то оставьте пустую строку), подсказки на одной строчке, разделенные знаком | (если не нужны, то оставьте пустую строку).
-                Каждые новые данные вводятся с новой строки. Порядок важен.
-                Пример,
-                1
-                1
-                Привет, посмотри какой-нибудь новогодний фильм. Администратор напишет о выполнении.
-                
-                """;
+        String questType = clsQuestTypeService.getQuestTypeName(getQuestType().getId());
+        return "Для добавления шага (" + questType + ") введите:\n" +
+                """
+                        день,
+                        порядок шага (оставьте строку пустой - порядок будет максимальный в рамках дня),
+                        текст без переносов строки (если не нужен, то оставьте пустую строку),
+                        подсказки на одной строчке, разделенные знаком | (если не нужны, то оставьте пустую строку).
+                        Каждые новые данные вводятся с новой строки. Порядок важен.
+                        Пример,
+                        1
+                        1
+                        Привет, посмотри какой-нибудь новогодний фильм. Администратор напишет о выполнении.
+                        """;
     }
 
     @Override
