@@ -171,7 +171,7 @@ public class QuestWithAllPersonAnswerHandler implements QuestHandler<QuestWithAl
         Step step = stepCommon.createStep(data, adventId);
         QuestWithAllPersonAnswer quest = new QuestWithAllPersonAnswer();
         quest.setStep(step);
-        step.setQuests(Collections.singletonList(quest));
+        step.getQuests().add(quest);
         quest.setHints(stepCommon.parseHints(data[EXPECTED_ROWS - 2], quest));
         quest.setAllowedAnswerTypes(DataType.getIdsFromString(data[EXPECTED_ROWS - 1]));
 

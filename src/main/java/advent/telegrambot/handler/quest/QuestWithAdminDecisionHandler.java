@@ -124,7 +124,7 @@ public class QuestWithAdminDecisionHandler implements QuestHandler<QuestWithAdmi
         Step step = stepCommon.createStep(data, adventId);
         QuestWithAdminDecision quest = new QuestWithAdminDecision();
         quest.setStep(step);
-        step.setQuests(Collections.singletonList(quest));
+        step.getQuests().add(quest);
         if (data.length == EXPECTED_ROWS) {
             quest.setHints(stepCommon.parseHints(data[EXPECTED_ROWS - 1], quest));
         }

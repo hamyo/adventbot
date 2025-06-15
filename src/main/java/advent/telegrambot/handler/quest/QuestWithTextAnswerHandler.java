@@ -134,11 +134,10 @@ public class QuestWithTextAnswerHandler implements QuestHandler<QuestWithTextAns
         Step step = stepCommon.createStep(data, adventId);
         QuestWithTextAnswer quest = new QuestWithTextAnswer();
         quest.setStep(step);
-        step.setQuests(Collections.singletonList(quest));
+        step.getQuests().add(quest);
         quest.setHints(stepCommon.parseHints(data[EXPECTED_ROWS - 2], quest));
         quest.setRightValues(
-                Arrays.stream(
-                                data[EXPECTED_ROWS - 1].split("/|"))
+                Arrays.stream(data[EXPECTED_ROWS - 1].split("/|"))
                         .filter(StringUtils::isNotBlank)
                         .toList());
 

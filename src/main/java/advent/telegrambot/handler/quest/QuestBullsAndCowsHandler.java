@@ -228,7 +228,7 @@ public class QuestBullsAndCowsHandler implements QuestHandler<QuestBullsAndCows>
         Step step = stepCommon.createStep(data, adventId);
         QuestBullsAndCows quest = new QuestBullsAndCows();
         quest.setStep(step);
-        step.setQuests(Collections.singletonList(quest));
+        step.getQuests().add(quest);
 
         return step;
     }

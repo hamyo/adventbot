@@ -26,7 +26,7 @@ public enum TelegramCommand {
     ADVENTS_STEPS("/advents/{id}/steps", "Шаги", "^\\/advents\\/(\\d+)\\/steps$"),
     ADVENTS_CODES("/advents/{id}/codes", "Коды адвента", "^\\/advents\\/(\\d+)\\/codes"),
     ADVENTS_FULL_INFO("/advents/{id}/fullinfo", "Полная информация", "^\\/advents\\/(\\d+)\\/fullinfo"),
-    ADVENTS_STEPS_CREATE("/advents/{id}/steps/create", "Создание шага адвента", "^\\/advents\\/(\\d+)\\/steps\\/create(\\?questTypeId=\\d+)?$"),
+    ADVENTS_STEPS_CREATE("/advents/{id}/steps/create", "Создание шага адвента", "^\\/advents\\/(\\d+)\\/steps\\/create(\\?questTypeId=(\\d+))?$"),
     ADVENTS_STEPS_CREATED("/advents/{id}/steps/created", "Шаг создан"),
 
     ADMIN_ADD("/admin/add"),
@@ -134,7 +134,7 @@ public enum TelegramCommand {
         if (matcher.matches()) {
             return Pair.of(
                     Integer.parseInt(matcher.group(1)),
-                    matcher.groupCount() == 2 ? null : Integer.parseInt(matcher.group(2)));
+                    matcher.groupCount() != 3 || matcher.group(3) == null ? null : Integer.parseInt(matcher.group(3)));
         } else {
             throw new IllegalArgumentException("inAction=" +
                     inAction +
