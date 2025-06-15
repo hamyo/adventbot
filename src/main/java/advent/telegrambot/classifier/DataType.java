@@ -104,7 +104,7 @@ public enum DataType {
             return null;
         }
 
-        return Arrays.stream(input.split("/|"))
+        return Arrays.stream(input.split("\\|"))
                 .filter(StringUtils::isNoneBlank)
                 .map(type -> NumberUtils.parseShort(type, "Тип данных"))
                 .map(DataType::of)

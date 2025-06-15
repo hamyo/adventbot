@@ -126,7 +126,7 @@ public class QuestWithAdminDecisionHandler implements QuestHandler<QuestWithAdmi
         quest.setStep(step);
         step.getQuests().add(quest);
         if (data.length == EXPECTED_ROWS) {
-            quest.setHints(stepCommon.parseHints(data[EXPECTED_ROWS - 1], quest));
+            quest.getHints().addAll(stepCommon.parseHints(data[EXPECTED_ROWS - 1], quest));
         }
 
         return step;

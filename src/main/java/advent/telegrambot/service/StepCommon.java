@@ -121,7 +121,7 @@ public class StepCommon {
             return Collections.emptyList();
         }
 
-        return Arrays.stream(input.split("/|"))
+        return Arrays.stream(input.split("\\|"))
                 .map(String::trim)
                 .filter(StringUtils::isNotBlank)
                 .map(Hint::new)

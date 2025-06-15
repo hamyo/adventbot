@@ -114,7 +114,7 @@ public class QuestWithAnyAnswerHandler implements QuestHandler<QuestWithAnyAnswe
         QuestWithAnyAnswer quest = new QuestWithAnyAnswer();
         quest.setStep(step);
         step.getQuests().add(quest);
-        quest.setHints(stepCommon.parseHints(data[EXPECTED_ROWS - 2], quest));
+        quest.getHints().addAll(stepCommon.parseHints(data[EXPECTED_ROWS - 2], quest));
         quest.setAllowedAnswerTypes(DataType.getIdsFromString(data[EXPECTED_ROWS - 1]));
 
         return step;

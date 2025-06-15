@@ -135,7 +135,7 @@ public class QuestWithTextAnswerHandler implements QuestHandler<QuestWithTextAns
         QuestWithTextAnswer quest = new QuestWithTextAnswer();
         quest.setStep(step);
         step.getQuests().add(quest);
-        quest.setHints(stepCommon.parseHints(data[EXPECTED_ROWS - 2], quest));
+        quest.getHints().addAll(stepCommon.parseHints(data[EXPECTED_ROWS - 2], quest));
         quest.setRightValues(
                 Arrays.stream(data[EXPECTED_ROWS - 1].split("/|"))
                         .filter(StringUtils::isNotBlank)
