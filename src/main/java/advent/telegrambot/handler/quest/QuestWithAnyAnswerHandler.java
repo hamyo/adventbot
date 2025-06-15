@@ -5,10 +5,8 @@ import advent.telegrambot.domain.Step;
 import advent.telegrambot.domain.quest.QuestWithAnyAnswer;
 import advent.telegrambot.handler.StepCreateHandler;
 import advent.telegrambot.repository.ClsDataTypeRepository;
-import advent.telegrambot.repository.ClsQuestTypeRepository;
 import advent.telegrambot.repository.StepRepository;
 import advent.telegrambot.service.AdminProgressService;
-import advent.telegrambot.service.AdventService;
 import advent.telegrambot.service.StepCommon;
 import advent.telegrambot.service.StepService;
 import advent.telegrambot.utils.AppException;
@@ -32,11 +30,9 @@ import static advent.telegrambot.utils.MessageUtils.getTelegramUserId;
 public class QuestWithAnyAnswerHandler implements QuestHandler<QuestWithAnyAnswer>, StepCreateHandler {
     private final StepService stepService;
     private final ClsDataTypeRepository clsDataTypeRepository;
-    private final AdventService adventService;
     private final AdminProgressService adminProgressService;
     private final StepRepository stepRepository;
     private final StepCommon stepCommon;
-    private final ClsQuestTypeRepository clsQuestTypeRepository;
 
     private final static int EXPECTED_ROWS = 5;
 

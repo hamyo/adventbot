@@ -4,10 +4,11 @@ import advent.telegrambot.domain.Person;
 import advent.telegrambot.domain.Step;
 import advent.telegrambot.domain.quest.QuestWithAdminDecision;
 import advent.telegrambot.handler.StepCreateHandler;
-import advent.telegrambot.repository.ClsQuestTypeRepository;
 import advent.telegrambot.repository.PersonRepository;
 import advent.telegrambot.repository.StepRepository;
-import advent.telegrambot.service.*;
+import advent.telegrambot.service.AdminProgressService;
+import advent.telegrambot.service.StepCommon;
+import advent.telegrambot.service.StepService;
 import advent.telegrambot.utils.AppException;
 import advent.telegrambot.utils.MessageUtils;
 import lombok.NonNull;
@@ -36,8 +37,6 @@ public class QuestWithAdminDecisionHandler implements QuestHandler<QuestWithAdmi
     private final PersonRepository personRepository;
     private final StepRepository stepRepository;
     private final AdminProgressService adminProgressService;
-    private final ClsQuestTypeRepository clsQuestTypeRepository;
-    private final AdventService adventService;
 
     private final static int EXPECTED_ROWS = 4;
 
@@ -107,7 +106,7 @@ public class QuestWithAdminDecisionHandler implements QuestHandler<QuestWithAdmi
         }
 
         String[] data = input.split("\n");
-        if (data.length != EXPECTED_ROWS) {
+        if (data.length != EXPECTED_ROWS && data.length != EXPECTED_ROWS - 1) {
             throw new AppException("Ожидаются данные на " + EXPECTED_ROWS + " строчках");
         }
 
@@ -115,7 +114,9 @@ public class QuestWithAdminDecisionHandler implements QuestHandler<QuestWithAdmi
         QuestWithAdminDecision quest = new QuestWithAdminDecision();
         quest.setStep(step);
         step.setQuests(Collections.singletonList(quest));
-        quest.setHints(stepCommon.parseHints(data[EXPECTED_ROWS - 1], quest));
+        if (data.length == EXPECTED_ROWS) {
+            quest.setHints(stepCommon.parseHints(data[EXPECTED_ROWS - 1], quest));
+        }
 
         return step;
     }

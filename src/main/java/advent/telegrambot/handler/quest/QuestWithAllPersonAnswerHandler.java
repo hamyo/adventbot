@@ -1,16 +1,18 @@
 package advent.telegrambot.handler.quest;
 
-import advent.telegrambot.domain.AdventCurrentStep;
 import advent.telegrambot.classifier.DataType;
+import advent.telegrambot.domain.AdventCurrentStep;
 import advent.telegrambot.domain.Person;
 import advent.telegrambot.domain.Step;
 import advent.telegrambot.domain.advent.Advent;
 import advent.telegrambot.domain.quest.QuestWithAllPersonAnswer;
 import advent.telegrambot.handler.StepCreateHandler;
 import advent.telegrambot.repository.ClsDataTypeRepository;
-import advent.telegrambot.repository.ClsQuestTypeRepository;
 import advent.telegrambot.repository.StepRepository;
-import advent.telegrambot.service.*;
+import advent.telegrambot.service.AdminProgressService;
+import advent.telegrambot.service.AdventCurrentStepService;
+import advent.telegrambot.service.StepCommon;
+import advent.telegrambot.service.StepService;
 import advent.telegrambot.utils.AppException;
 import advent.telegrambot.utils.MessageUtils;
 import lombok.NonNull;
@@ -43,10 +45,8 @@ public class QuestWithAllPersonAnswerHandler implements QuestHandler<QuestWithAl
     private final StepService stepService;
     private final ClsDataTypeRepository clsDataTypeRepository;
     private final AdminProgressService adminProgressService;
-    private final AdventService adventService;
     private final StepRepository stepRepository;
     private final StepCommon stepCommon;
-    private final ClsQuestTypeRepository clsQuestTypeRepository;
 
     private final static String ALREADY_ANSWERED_PERSON_IDS = "ALREADY_ANSWERED_PERSON_IDS";
     private final static int EXPECTED_ROWS = 5;
