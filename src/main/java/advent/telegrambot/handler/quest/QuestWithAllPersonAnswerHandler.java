@@ -126,7 +126,7 @@ public class QuestWithAllPersonAnswerHandler implements QuestHandler<QuestWithAl
     public String getMessageForCreate() {
         String questType = clsQuestTypeService.getQuestTypeName(getQuestType().getId());
         String dataTypeDescription = clsDataTypeService.getAllDataTypeDescription();
-        return "Для добавления шага (" + questType + ") введите:\n +" +
+        return "Для добавления шага (" + questType + ") введите:\n" +
                 """
                         день,
                         порядок шага (оставьте строку пустой - порядок будет максимальный в рамках дня),
