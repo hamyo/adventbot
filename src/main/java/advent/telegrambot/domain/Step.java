@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -49,7 +50,7 @@ public class Step {
 
     @Transient
     public String getRusInfo() {
-        return String.format("Шаг %s (id=%s)\n%s", order, id, text);
+        return String.format("Шаг %s (id=%s)\n%s", order, id, StringUtils.isBlank(text) ? "(Без текста)" : text);
     }
 
 }

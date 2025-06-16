@@ -42,6 +42,9 @@ public class AdventFullInfoService {
              ZipOutputStream zos = new ZipOutputStream(baos)) {
             StringBuilder stepInfo = new StringBuilder();
             for (Step step : steps) {
+                if (!stepInfo.isEmpty()) {
+                    stepInfo.append("\n");
+                }
                 stepInfo.append(step.getRusInfo());
                 addContentInfoIfNeed(stepInfo, zos, step.getContent());
 
@@ -71,6 +74,6 @@ public class AdventFullInfoService {
         }
 
         info.append("\n").append(content.getRusInfo());
-        ZipUtils.addFileToZip(zos, content.getNotEmptyName(), content.getData());
+        ZipUtils.addFileToZip(zos, content.getNotEmptyNameWithId(), content.getData());
     }
 }

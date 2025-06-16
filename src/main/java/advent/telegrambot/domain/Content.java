@@ -53,10 +53,9 @@ public class Content {
 
     @Transient
     public String getRusInfo() {
-        return String.format("%s id=%s (%s)\n%s",
-                id,
-                type.getRusName(),
-                getNotEmptyNameWithId(),
-                caption);
+        return type.getRusName() +
+                " id=" + id +
+                " (" + getNotEmptyNameWithId() + ")" +
+                (StringUtils.isBlank(caption) ? "" : "\n" + caption);
     }
 }

@@ -68,7 +68,7 @@ public class AdventFullInfoHandler implements MessageHandler {
                             .caption("День " + day)
                             .document(new InputFile(
                                     new ByteArrayInputStream(dayInfo),
-                                    "Информация_по_дню.zip"))
+                                    "Информация_по_дню_" + day + ".zip"))
                             .replyMarkup(adventHandlerFactory.getAdminKeyboard(advent))
                             .build());
 

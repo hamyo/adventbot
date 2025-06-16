@@ -25,7 +25,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static advent.telegrambot.classifier.QuestType.TEXT_ANSWER;
@@ -137,7 +136,7 @@ public class QuestWithTextAnswerHandler implements QuestHandler<QuestWithTextAns
         step.getQuests().add(quest);
         quest.getHints().addAll(stepCommon.parseHints(data[EXPECTED_ROWS - 2], quest));
         quest.setRightValues(
-                Arrays.stream(data[EXPECTED_ROWS - 1].split("/|"))
+                Arrays.stream(data[EXPECTED_ROWS - 1].split("\\|"))
                         .filter(StringUtils::isNotBlank)
                         .toList());
 
