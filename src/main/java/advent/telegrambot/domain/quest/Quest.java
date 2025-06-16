@@ -29,7 +29,7 @@ public abstract class Quest {
     @Column(name = "q_id", nullable = false)
     private Long id;
 
-    @OneToMany(mappedBy = "quest", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "quest", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Fetch(FetchMode.SUBSELECT)
     @OrderBy("id ASC")
     private List<Hint> hints = new ArrayList<>();
