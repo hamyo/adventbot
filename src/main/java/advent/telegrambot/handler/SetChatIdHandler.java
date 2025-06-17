@@ -21,7 +21,7 @@ public class SetChatIdHandler implements MessageHandler {
     @Override
     @SneakyThrows
     public void handle(Update update) {
-        Long chatId = update.getMessage().getChatId();
+        Long chatId = MessageUtils.getChatId(update);
         adventService.setChatId(chatId);
         telegramClient.executeAsync(
                 SendMessage.builder()

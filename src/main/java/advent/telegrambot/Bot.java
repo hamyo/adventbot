@@ -52,7 +52,7 @@ public class Bot implements SpringLongPollingBot, LongPollingSingleThreadUpdateC
         SendMessage message = SendMessage // Create a message object
                 .builder()
                 .chatId(MessageUtils.getChatId(update))
-                .text(errorMessage)
+                .text("⚠\uFE0F" + errorMessage + "⚠\uFE0F")
                 .build();
         try {
             telegramClient.execute(message);

@@ -108,7 +108,6 @@ public class AdventService {
             throw new AppException("Адвент с пустым id чата не найден");
         }
         advent.setChatId(chatId);
-        adventRepository.save(advent);
     }
 
     @Transactional(readOnly = true)
