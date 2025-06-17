@@ -47,7 +47,15 @@ public enum DataType {
         this.extension = extension;
     }
 
-    private static boolean isImage(String mimeType) {
+    public static boolean isGif(String mimeType) {
+        if (StringUtils.isBlank(mimeType)) {
+            return false;
+        }
+
+        return mimeType.toLowerCase().endsWith("gif");
+    }
+
+    public static boolean isImage(String mimeType) {
         if (StringUtils.isBlank(mimeType)) {
             return false;
         }
@@ -85,7 +93,8 @@ public enum DataType {
             return IMAGE;
         } else if (message.hasAnimation()) {
             return GIF;
-        } else if (message.hasDocument() && isImage(message.getDocument().getMimeType())) {
+        } else if (message.hasDocument() && isImage(message.getDocument().getMimeType()) &&
+                !isGif(message.getDocument().getMimeType())) {
             return IMAGE;
         } else if (message.hasText()) {
             return TEXT;

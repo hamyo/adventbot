@@ -13,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.File;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.games.Animation;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
@@ -68,12 +69,20 @@ public class FileHelper {
         }
 
         Message message = update.getMessage();
-        if (message.hasDocument()) {
+        if (message.hasAnimation()) {
+            Animation animation = message.getAnimation();
+            return Optional.of(
+                    new Content(
+                            DataType.GIF,
+                            animation.getFileName(),
+                            message.getCaption(),
+                            download(animation.getFileId())));
+        } else if (message.hasDocument()) {
             Document document = message.getDocument();
 
             return Optional.of(
                     new Content(
-                            DataType.DOCUMENT,
+                            DataType.isImage(document.getMimeType()) ? DataType.IMAGE : DataType.DOCUMENT,
                             document.getFileName(),
                             message.getCaption(),
                             download(document.getFileId())));
