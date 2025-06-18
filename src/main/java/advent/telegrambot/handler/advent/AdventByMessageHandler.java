@@ -1,22 +1,25 @@
 package advent.telegrambot.handler.advent;
 
 import advent.telegrambot.domain.advent.AdventByMessage;
+import advent.telegrambot.service.StepCommon;
 import advent.telegrambot.service.StepService;
 import advent.telegrambot.utils.MessageUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class AdventByMessageHandler implements AdventHandler<AdventByMessage> {
-    private final StepService stepService;
+    private final StepCommon stepCommon;
 
     @Override
+    @Transactional
     public void startDay(@NotNull AdventByMessage advent, @NonNull Short day, String messageText) {
-        stepService.handleStartDayStep(advent, day);
+        stepCommon.handleStartDayStep(advent, day);
     }
 
     @Override

@@ -2,6 +2,7 @@ package advent.telegrambot.service;
 
 import advent.telegrambot.domain.Step;
 import advent.telegrambot.domain.advent.Advent;
+import advent.telegrambot.domain.advent.AdventByCode;
 import advent.telegrambot.domain.dto.AdventInfo;
 import advent.telegrambot.domain.dto.CheckError;
 import advent.telegrambot.handler.TelegramCommand;
@@ -26,6 +27,7 @@ import java.util.List;
 public class AdventService {
     private final AdventRepository adventRepository;
     private final StepRepository stepRepository;
+    private final CodeService codeService;
 
     @Transactional
     public Integer create(Advent advent) {
@@ -126,5 +128,16 @@ public class AdventService {
     public @NonNull Advent findById(@NonNull Integer id) {
         return adventRepository.findById(id)
                 .orElseThrow(() -> new AppException("Не удалось найти адвент с id=" + id));
+    }
+
+    @Transactional
+    public void addCode(@NonNull Integer id) {
+        Advent advent = findById(id);
+        if (advent instanceof AdventByCode adventByCode) {
+            while (adventByCode.getCodes().size() < stepRepository.countDistinctDaysByAdvent(advent)) {
+                String code = codeService.generateCode(10);
+                adventByCode.getCodes().add(code);
+            }
+        }
     }
 }

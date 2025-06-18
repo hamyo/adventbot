@@ -25,52 +25,6 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 public class StepService {
     private final StepRepository stepRepository;
-    private final StepCommon stepCommon;
-    private final TelegramClient telegramClient;
-    private final AdventCurrentStepRepository adventCurrentStepRepository;
-
-    @Transactional
-    public void handleStartDayStep(@NonNull Advent advent, @NonNull Short day) {
-        handleNextSteps(advent, day, (short) 0);
-    }
-
-    @Transactional
-    public void handleNextSteps(@NonNull Advent advent, @NonNull Short day, @NonNull Short order) {
-        List<Step> steps = getNextSteps(advent, day, order);
-        steps.forEach(step -> this.handle(step, advent));
-        if (steps.isEmpty()) {
-            Step lastStep = steps.getLast();
-            if (!stepRepository.existsNextSteps(
-                    lastStep.getAdvent().getId(),
-                    lastStep.getDay(),
-                    lastStep.getOrder())) {
-                lastStep.getAdvent().setFinishDate(LocalDate.now());
-            }
-        }
-    }
-
-    @SneakyThrows
-    private void handle(Step step, @NonNull Advent advent) {
-        InlineKeyboardMarkup markup = step.getQuests().isEmpty() || step.getQuests().getFirst().getHints().isEmpty() ?
-                null :
-                MessageUtils.getHintActionKeyboard();
-
-        stepCommon.sendContentMessage(step.getContent(), advent.getChatId(), markup);
-        if (StringUtils.isNoneBlank(step.getText())) {
-            SendMessage message = SendMessage // Create a message object
-                    .builder()
-                    .chatId(advent.getChatId())
-                    .replyMarkup(markup)
-                    .text(step.getText())
-                    .build();
-            telegramClient.execute(message);
-
-            adventCurrentStepRepository.save(new AdventCurrentStep(
-                    advent.getId(),
-                    step
-            ));
-        }
-    }
 
     @Transactional(readOnly = true)
     public List<Step> getNextSteps(@NonNull Advent advent, @NonNull Short day, @NonNull Short order) {

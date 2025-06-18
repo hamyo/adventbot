@@ -20,6 +20,19 @@ import java.util.Set;
 @Entity
 @Table(name = "step")
 @NoArgsConstructor
+@NamedEntityGraphs({
+        @NamedEntityGraph(
+                name = "Step.withContentAndQuests",
+                attributeNodes = {
+                        @NamedAttributeNode("content"),
+                        @NamedAttributeNode(value = "quests", subgraph = "questsWithHints")
+                },
+                subgraphs = @NamedSubgraph(
+                        name = "questsWithHints",
+                        attributeNodes = @NamedAttributeNode("hints")
+                )
+        )
+})
 public class Step {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

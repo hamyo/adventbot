@@ -16,7 +16,6 @@ import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -28,9 +27,9 @@ import java.util.*;
 import static advent.telegrambot.classifier.QuestType.BULLS_AND_COWS;
 import static advent.telegrambot.utils.MessageUtils.getTelegramUserId;
 
-@Component
+@Service
 @RequiredArgsConstructor
-public class QuestBullsAndCowsHandler implements QuestHandler<QuestBullsAndCows>, StepCreateHandler {
+public class QuestBullsAndCowsService implements StepCreateHandler {
     private final AdventCurrentStepService adventCurrentStepService;
     private final StepService stepService;
     private final TelegramClient telegramClient;

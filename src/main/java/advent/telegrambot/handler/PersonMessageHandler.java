@@ -3,23 +3,20 @@ package advent.telegrambot.handler;
 import advent.telegrambot.domain.AdventCurrentStep;
 import advent.telegrambot.domain.Step;
 import advent.telegrambot.domain.advent.Advent;
-import advent.telegrambot.domain.advent.AdventByCode;
 import advent.telegrambot.handler.advent.AdventHandlerFactory;
 import advent.telegrambot.handler.quest.QuestHandlerFactory;
-import advent.telegrambot.repository.AdminProgressRepository;
 import advent.telegrambot.repository.AdventCurrentStepRepository;
 import advent.telegrambot.repository.StepRepository;
 import advent.telegrambot.service.AdventService;
 import advent.telegrambot.service.PersonService;
+import advent.telegrambot.service.StepCommon;
 import advent.telegrambot.service.StepService;
 import advent.telegrambot.utils.AppException;
 import advent.telegrambot.utils.DateUtils;
 import advent.telegrambot.utils.MessageUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
@@ -30,18 +27,17 @@ import java.util.Optional;
 
 import static advent.telegrambot.utils.MessageUtils.getTelegramUserId;
 
-@Service
+@Component
 @RequiredArgsConstructor
-public class StepHandler implements MessageHandler {
+public class PersonMessageHandler implements MessageHandler {
     private final PersonService personService;
     private final AdventService adventService;
     private final AdventCurrentStepRepository adventCurrentStepRepository;
     private final StepRepository stepRepository;
-    private final StepService stepService;
     private final TelegramClient telegramClient;
     private final QuestHandlerFactory questHandlerFactory;
-    private final AdminProgressRepository adminProgressRepository;
     private final AdventHandlerFactory adventHandlerFactory;
+    private final StepCommon stepCommon;
 
     @Override
     public int getPriority() {
@@ -68,7 +64,6 @@ public class StepHandler implements MessageHandler {
 
     @SneakyThrows
     @Override
-    @Transactional
     public void handle(Update update) {
         long chatId = MessageUtils.getChatId(update);
         Advent advent = adventService.findByChatId(chatId);
@@ -89,11 +84,11 @@ public class StepHandler implements MessageHandler {
                 if (nextStep.isEmpty()) {
                     telegramClient.executeAsync(
                             SendMessage.builder()
-                            .chatId(chatId)
-                            .text("Задания на сегодня закончены\uD83D\uDE0B.")
-                            .build());
+                                    .chatId(chatId)
+                                    .text("Задания на сегодня закончены\uD83D\uDE0B.")
+                                    .build());
                 } else {
-                    stepService.handleNextSteps(advent, currentStep.getDay(), currentStep.getOrder());
+                    stepCommon.handleNextSteps(advent, currentStep.getDay(), currentStep.getOrder());
                 }
             } else {
                 questHandlerFactory.handle(currentStep, update);
@@ -107,10 +102,8 @@ public class StepHandler implements MessageHandler {
 
 
     @Override
-    @Transactional(readOnly = true)
     public boolean canHandle(Update update) {
         return personService.isExist(getTelegramUserId(update)) &&
-                !adminProgressRepository.existsById(getTelegramUserId(update)) &&
                 TelegramCommand.isNotAnyCommand(update);
     }
 }

@@ -2,6 +2,7 @@ package advent.telegrambot.repository;
 
 import advent.telegrambot.domain.Step;
 import advent.telegrambot.domain.advent.Advent;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,6 +26,9 @@ public interface StepRepository extends JpaRepository<Step, Long> {
             Advent advent,
             Short day,
             Short minOrder);
+
+    @EntityGraph("Step.withContentAndQuests")
+    Optional<Step> findFullGraphById(Long id);
 
 
     @Query("SELECT COUNT(DISTINCT s.day) FROM Step s WHERE s.advent = :advent")

@@ -1,28 +1,29 @@
 package advent.telegrambot.service;
 
 import advent.telegrambot.classifier.DataType;
+import advent.telegrambot.domain.AdventCurrentStep;
 import advent.telegrambot.domain.Content;
 import advent.telegrambot.domain.Hint;
 import advent.telegrambot.domain.Step;
 import advent.telegrambot.domain.advent.Advent;
 import advent.telegrambot.domain.quest.Quest;
+import advent.telegrambot.repository.AdventCurrentStepRepository;
 import advent.telegrambot.repository.StepRepository;
 import advent.telegrambot.utils.AppException;
+import advent.telegrambot.utils.MessageUtils;
 import advent.telegrambot.utils.NumberUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendAudio;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.methods.send.SendVideo;
-import org.telegram.telegrambots.meta.api.methods.send.SendVoice;
+import org.telegram.telegrambots.meta.api.methods.send.*;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import java.io.ByteArrayInputStream;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -36,6 +37,8 @@ public class StepCommon {
     private final TelegramClient telegramClient;
     private final StepRepository stepRepository;
     private final AdventService adventService;
+    private final StepService stepService;
+    private final AdventCurrentStepRepository adventCurrentStepRepository;
 
     public @NonNull Short getStepOrder(String order, @NonNull Advent advent, @NonNull Short day) {
         if (StringUtils.isNotBlank(order)) {
@@ -127,5 +130,49 @@ public class StepCommon {
                 .map(Hint::new)
                 .peek(hint -> hint.setQuest(quest))
                 .toList();
+    }
+
+    public void handleStartDayStep(@NonNull Advent advent, @NonNull Short day) {
+        handleNextSteps(advent, day, (short) 0);
+    }
+
+    public void handleNextSteps(@NonNull Advent advent, @NonNull Short day, @NonNull Short order) {
+        List<Step> steps = stepService.getNextSteps(advent, day, order);
+        steps.forEach(step -> this.handle(step.getId(), advent));
+        // Это нужно при обработке последнего шага
+        if (!steps.isEmpty()) {
+            Step lastStep = steps.getLast();
+            if (!stepRepository.existsNextSteps(
+                    lastStep.getAdvent().getId(),
+                    lastStep.getDay(),
+                    lastStep.getOrder())) {
+                lastStep.getAdvent().setFinishDate(LocalDate.now());
+            }
+        }
+    }
+
+    @SneakyThrows
+    private void handle(@NonNull Long stepId, @NonNull Advent advent) {
+        Step step = stepRepository.findFullGraphById(stepId)
+                .orElseThrow(() -> new AppException("Не найден шаг с id=" + stepId));
+        InlineKeyboardMarkup markup = step.getQuests().isEmpty() || step.getQuests().getFirst().getHints().isEmpty() ?
+                null :
+                MessageUtils.getHintActionKeyboard();
+
+        sendContentMessage(step.getContent(), advent.getChatId(), markup);
+        if (StringUtils.isNoneBlank(step.getText())) {
+            SendMessage message = SendMessage // Create a message object
+                    .builder()
+                    .chatId(advent.getChatId())
+                    .replyMarkup(markup)
+                    .text(step.getText())
+                    .build();
+            telegramClient.execute(message);
+
+            adventCurrentStepRepository.save(new AdventCurrentStep(
+                    advent.getId(),
+                    step
+            ));
+        }
     }
 }
