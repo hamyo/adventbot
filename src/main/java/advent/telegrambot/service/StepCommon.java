@@ -38,7 +38,7 @@ public class StepCommon {
     private final StepRepository stepRepository;
     private final AdventService adventService;
     private final StepService stepService;
-    private final AdventCurrentStepRepository adventCurrentStepRepository;
+    private final AdventCurrentStepService adventCurrentStepService;
 
     public @NonNull Short getStepOrder(String order, @NonNull Advent advent, @NonNull Short day) {
         if (StringUtils.isNotBlank(order)) {
@@ -136,6 +136,11 @@ public class StepCommon {
         handleNextSteps(advent, day, (short) 0);
     }
 
+    public void handleNextSteps(@NonNull Advent advent) {
+        Step currentStep = adventCurrentStepService.findById(advent.getId()).getStep();
+        handleNextSteps(advent, currentStep.getDay(), currentStep.getOrder());
+    }
+
     public void handleNextSteps(@NonNull Advent advent, @NonNull Short day, @NonNull Short order) {
         List<Step> steps = stepService.getNextSteps(advent, day, order);
         steps.forEach(step -> this.handle(step.getId(), advent));
@@ -169,7 +174,7 @@ public class StepCommon {
                     .build();
             telegramClient.execute(message);
 
-            adventCurrentStepRepository.save(new AdventCurrentStep(
+            adventCurrentStepService.save(new AdventCurrentStep(
                     advent.getId(),
                     step
             ));

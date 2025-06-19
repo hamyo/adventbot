@@ -1,10 +1,8 @@
 package advent.telegrambot.handler.quest;
 
-import advent.telegrambot.domain.AdventCurrentStep;
 import advent.telegrambot.domain.advent.Advent;
 import advent.telegrambot.domain.dto.BullsAndCowsResult;
 import advent.telegrambot.domain.quest.QuestBullsAndCows;
-import advent.telegrambot.service.AdventCurrentStepService;
 import advent.telegrambot.service.AdventService;
 import advent.telegrambot.service.StepCommon;
 import advent.telegrambot.utils.MessageUtils;
@@ -19,7 +17,6 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 @Component
 @RequiredArgsConstructor
 public class QuestBullsAndCowsHandler implements QuestHandler<QuestBullsAndCows> {
-    private final AdventCurrentStepService adventCurrentStepService;
     private final TelegramClient telegramClient;
     private final StepCommon stepCommon;
     private final AdventService adventService;
@@ -47,12 +44,7 @@ public class QuestBullsAndCowsHandler implements QuestHandler<QuestBullsAndCows>
                     .build();
             telegramClient.execute(message);
 
-            AdventCurrentStep adventCurrentStep = adventCurrentStepService.findById(advent.getId());
-            stepCommon.handleNextSteps(
-                    advent,
-                    adventCurrentStep.getStep().getDay(),
-                    adventCurrentStep.getStep().getOrder()
-            );
+            stepCommon.handleNextSteps(advent);
         }
     }
 

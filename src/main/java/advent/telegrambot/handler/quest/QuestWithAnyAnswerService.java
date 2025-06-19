@@ -1,11 +1,14 @@
 package advent.telegrambot.handler.quest;
 
+import advent.telegrambot.classifier.DataType;
 import advent.telegrambot.classifier.QuestType;
 import advent.telegrambot.domain.Step;
-import advent.telegrambot.domain.quest.QuestWithAdminDecision;
+import advent.telegrambot.domain.quest.QuestWithAnyAnswer;
 import advent.telegrambot.handler.StepCreateHandler;
+import advent.telegrambot.repository.ClsQuestTypeRepository;
 import advent.telegrambot.repository.StepRepository;
 import advent.telegrambot.service.AdminProgressService;
+import advent.telegrambot.service.ClsDataTypeService;
 import advent.telegrambot.service.ClsQuestTypeService;
 import advent.telegrambot.service.StepCommon;
 import advent.telegrambot.utils.AppException;
@@ -13,25 +16,28 @@ import advent.telegrambot.utils.MessageUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import static advent.telegrambot.classifier.QuestType.ADMIN_DECISION;
+import static advent.telegrambot.classifier.QuestType.ANY_ANSWER;
 import static advent.telegrambot.utils.MessageUtils.getTelegramUserId;
 
 @Service
 @RequiredArgsConstructor
-public class QuestWithAdminDecisionService implements StepCreateHandler {
+public class QuestWithAnyAnswerService implements StepCreateHandler {
+    private final ClsDataTypeService clsDataTypeService;
     private final ClsQuestTypeService clsQuestTypeService;
     private final AdminProgressService adminProgressService;
     private final StepRepository stepRepository;
     private final StepCommon stepCommon;
 
-    private final static int EXPECTED_ROWS = 4;
+    private final static int EXPECTED_ROWS = 5;
 
     private QuestType getQuestType() {
-        return ADMIN_DECISION;
+        return ANY_ANSWER;
     }
 
     @Override
@@ -40,19 +46,28 @@ public class QuestWithAdminDecisionService implements StepCreateHandler {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public String getMessageForCreate() {
         String questType = clsQuestTypeService.getQuestTypeName(getQuestType().getId());
+        String dataTypeDescription = clsDataTypeService.getAllDataTypeDescription();
         return "Для добавления шага (" + questType + ") введите:\n" +
                 """
                         день,
                         порядок шага (оставьте строку пустой - порядок будет максимальный в рамках дня),
-                        текст без переносов строки (если не нужен, то оставьте пустую строку),
-                        подсказки на одной строчке, разделенные знаком | (если не нужны, то оставьте пустую строку).
+                        текст без переносов строки (если он нужен, если не нужен, то оставьте пустую строку),
+                        подсказки на одной строчке, разделенные знаком | (если не нужны, то оставьте пустую строку),
+                        идентификаторы возможных типов данных ответа, разделенные знаком |
+                        """ +
+                dataTypeDescription +
+                """
+                        .
                         Каждые новые данные вводятся с новой строки. Порядок важен.
                         Пример,
                         1
                         1
-                        Привет, посмотри какой-нибудь новогодний фильм. Администратор напишет о выполнении.
+                        Привет, нарисуй новогоднюю открытку и пришли её фотографию
+                        
+                        1
                         """;
     }
 
@@ -72,17 +87,16 @@ public class QuestWithAdminDecisionService implements StepCreateHandler {
         }
 
         String[] data = input.split("\n");
-        if (data.length != EXPECTED_ROWS && data.length != EXPECTED_ROWS - 1) {
+        if (data.length != EXPECTED_ROWS) {
             throw new AppException("Ожидаются данные на " + EXPECTED_ROWS + " строчках");
         }
 
         Step step = stepCommon.createStep(data, adventId);
-        QuestWithAdminDecision quest = new QuestWithAdminDecision();
+        QuestWithAnyAnswer quest = new QuestWithAnyAnswer();
         quest.setStep(step);
         step.getQuests().add(quest);
-        if (data.length == EXPECTED_ROWS) {
-            quest.getHints().addAll(stepCommon.parseHints(data[EXPECTED_ROWS - 1], quest));
-        }
+        quest.getHints().addAll(stepCommon.parseHints(data[EXPECTED_ROWS - 2], quest));
+        quest.setAllowedAnswerTypes(DataType.getIdsFromString(data[EXPECTED_ROWS - 1]));
 
         return step;
     }

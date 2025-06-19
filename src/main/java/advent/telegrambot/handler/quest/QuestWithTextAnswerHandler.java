@@ -1,9 +1,7 @@
 package advent.telegrambot.handler.quest;
 
-import advent.telegrambot.domain.Step;
 import advent.telegrambot.domain.advent.Advent;
 import advent.telegrambot.domain.quest.QuestWithTextAnswer;
-import advent.telegrambot.service.AdventCurrentStepService;
 import advent.telegrambot.service.AdventService;
 import advent.telegrambot.service.StepCommon;
 import advent.telegrambot.utils.MessageUtils;
@@ -11,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
@@ -23,7 +20,6 @@ import java.util.List;
 public class QuestWithTextAnswerHandler implements QuestHandler<QuestWithTextAnswer> {
     private final TelegramClient telegramClient;
     private final StepCommon stepCommon;
-    private final AdventCurrentStepService adventCurrentStepService;
     private final AdventService adventService;
 
     private boolean isAnswerRight(List<String> rightValues, final Update update) {
@@ -33,7 +29,6 @@ public class QuestWithTextAnswerHandler implements QuestHandler<QuestWithTextAns
 
     @SneakyThrows
     @Override
-    @Transactional
     public void handle(@NotNull QuestWithTextAnswer quest, Update update) {
         Advent advent = adventService.findByStepsQuestsId(quest.getId());
 
@@ -45,11 +40,7 @@ public class QuestWithTextAnswerHandler implements QuestHandler<QuestWithTextAns
                     .build();
             telegramClient.execute(message);
 
-            Step step = adventCurrentStepService.findById(advent.getId()).getStep();
-            stepCommon.handleNextSteps(
-                    advent,
-                    step.getDay(),
-                    step.getOrder());
+            stepCommon.handleNextSteps(advent);
         } else {
             SendMessage message = SendMessage
                     .builder()

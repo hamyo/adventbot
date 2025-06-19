@@ -1,180 +1,59 @@
 package advent.telegrambot.handler.quest;
 
 import advent.telegrambot.classifier.DataType;
-import advent.telegrambot.classifier.QuestType;
-import advent.telegrambot.domain.AdventCurrentStep;
 import advent.telegrambot.domain.Person;
-import advent.telegrambot.domain.Step;
 import advent.telegrambot.domain.advent.Advent;
 import advent.telegrambot.domain.quest.QuestWithAllPersonAnswer;
-import advent.telegrambot.handler.StepCreateHandler;
-import advent.telegrambot.repository.StepRepository;
-import advent.telegrambot.service.*;
+import advent.telegrambot.service.AdventService;
+import advent.telegrambot.service.StepCommon;
 import advent.telegrambot.utils.AppException;
 import advent.telegrambot.utils.MessageUtils;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import static advent.telegrambot.classifier.QuestType.ALL_PERSON_ANSWER;
-import static advent.telegrambot.utils.MessageUtils.getTelegramUserId;
-
-
-@Service
+@Component
 @RequiredArgsConstructor
-public class QuestWithAllPersonAnswerHandler implements QuestHandler<QuestWithAllPersonAnswer>, StepCreateHandler {
+public class QuestWithAllPersonAnswerHandler implements QuestHandler<QuestWithAllPersonAnswer> {
     private final TelegramClient telegramClient;
-    private final AdventCurrentStepService adventCurrentStepService;
-    private final StepService stepService;
-    private final ClsDataTypeService clsDataTypeService;
-    private final AdminProgressService adminProgressService;
-    private final StepRepository stepRepository;
+    private final AdventService adventService;
     private final StepCommon stepCommon;
-    private final ClsQuestTypeService clsQuestTypeService;
-
-    private final static String ALREADY_ANSWERED_PERSON_IDS = "ALREADY_ANSWERED_PERSON_IDS";
-    private final static int EXPECTED_ROWS = 5;
-
-    private Set<Long> getAlreadyAnsweredPersonIds(Map<String, Object> adventCurrentStepData) {
-        return Arrays.stream(
-                        String.valueOf(adventCurrentStepData.getOrDefault(ALREADY_ANSWERED_PERSON_IDS, "")).split(","))
-                .map(String::trim)
-                .filter(StringUtils::isNumeric)
-                .map(Long::parseLong)
-                .collect(Collectors.toSet());
-    }
-
-    private void updateCurrentStep(AdventCurrentStep currentStep, Set<Long> alreadyAnsweredPersonIds) {
-        currentStep.getData().put(
-                ALREADY_ANSWERED_PERSON_IDS,
-                alreadyAnsweredPersonIds.stream()
-                        .map(Object::toString)
-                        .collect(Collectors.joining(","))
-        );
-        adventCurrentStepService.save(currentStep);
-    }
+    private final QuestWithAllPersonAnswerService questWithAllPersonAnswerService;
 
     @SneakyThrows
     @Override
-    @Transactional
     public void handle(@NotNull QuestWithAllPersonAnswer quest, Update update) {
         DataType answerType = DataType.of(update);
         if (answerType == null || quest.isNotNeedType(answerType)) {
             throw new AppException("Это не тот ответ, который ожидается\uD83D\uDE1F. Я жду " + quest.getRusNameNeedTypes());
         }
 
-        Advent advent = quest.getStep().getAdvent();
-        AdventCurrentStep adventCurrentStep = adventCurrentStepService.findById(advent.getId());
-        Set<Long> alreadyAnsweredPersonIds = getAlreadyAnsweredPersonIds(adventCurrentStep.getData());
         Long answeredPersonId = MessageUtils.getTelegramUserId(update);
-        Person answeredPerson = advent.getPersons().stream()
-                .filter(person -> person.getId().equals(answeredPersonId))
-                .findAny()
-                .orElse(null);
-        if (answeredPerson != null) {
-            alreadyAnsweredPersonIds.add(answeredPersonId);
+        Advent advent = adventService.findByStepsQuestsId(quest.getId());
+        Pair<Person, Boolean> checkResult = questWithAllPersonAnswerService.checkAnswer(advent.getId(), answeredPersonId);
 
+        if (checkResult.getLeft() != null) {
             SendMessage message = SendMessage
                     .builder()
                     .chatId(advent.getChatId())
-                    .text(MessageUtils.getResponseTextForUser(answeredPerson.getNameNominative()))
+                    .text(MessageUtils.getResponseTextForUser(checkResult.getLeft().getNameNominative()))
                     .build();
-            telegramClient.executeAsync(message);
+            telegramClient.execute(message);
+        }
 
-
-            updateCurrentStep(adventCurrentStep, alreadyAnsweredPersonIds);
-            if (alreadyAnsweredPersonIds.size() == advent.getPersons().size()) {
-                stepService.handleNextSteps(
-                        advent,
-                        quest.getStep().getDay(),
-                        quest.getStep().getOrder()
-                );
-            }
+        if (checkResult.getRight()) {
+            stepCommon.handleNextSteps(advent);
         }
     }
 
     @Override
     public Class<QuestWithAllPersonAnswer> getHandledQuestClass() {
         return QuestWithAllPersonAnswer.class;
-    }
-
-    private QuestType getQuestType() {
-        return ALL_PERSON_ANSWER;
-    }
-
-    @Override
-    public boolean canHandle(Integer questType) {
-        return getQuestType().is(questType);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public String getMessageForCreate() {
-        String questType = clsQuestTypeService.getQuestTypeName(getQuestType().getId());
-        String dataTypeDescription = clsDataTypeService.getAllDataTypeDescription();
-        return "Для добавления шага (" + questType + ") введите:\n" +
-                """
-                        день,
-                        порядок шага (оставьте строку пустой - порядок будет максимальный в рамках дня),
-                        текст без переносов строки (если он нужен, если не нужен, то оставьте пустую строку),
-                        подсказки на одной строчке, разделенные знаком | (если не нужны, то оставьте пустую строку),
-                        идентификаторы возможных типов данных ответа, разделенные знаком |
-                        """ +
-                dataTypeDescription +
-                """
-                        .
-                        Каждые новые данные вводятся с новой строки. Порядок важен.
-                        "Пример,
-                        1
-                        1
-                        Привет, нарисуй новогоднюю открытку и пришли её фотографию
-                        
-                        1
-                        """
-                ;
-    }
-
-    @Override
-    @Transactional
-    public Long createStep(Update update) {
-        long personId = getTelegramUserId(update);
-        Pair<Integer, Integer> ids = adminProgressService.getAdventStepsCreateIds(personId);
-        Step step = createStep(MessageUtils.getMessageText(update), ids.getLeft());
-        stepRepository.save(step);
-        return step.getId();
-    }
-
-    private Step createStep(String input, @NonNull Integer adventId) {
-        if (input == null) {
-            throw new AppException("Нет данных для создания шага");
-        }
-
-        String[] data = input.split("\n");
-        if (data.length != EXPECTED_ROWS) {
-            throw new AppException("Ожидаются данные на " + EXPECTED_ROWS + " строчках");
-        }
-
-        Step step = stepCommon.createStep(data, adventId);
-        QuestWithAllPersonAnswer quest = new QuestWithAllPersonAnswer();
-        quest.setStep(step);
-        step.getQuests().add(quest);
-        quest.getHints().addAll(stepCommon.parseHints(data[EXPECTED_ROWS - 2], quest));
-        quest.setAllowedAnswerTypes(DataType.getIdsFromString(data[EXPECTED_ROWS - 1]));
-
-        return step;
     }
 }
