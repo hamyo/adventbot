@@ -29,14 +29,4 @@ public class CodeService {
         }
         return sb.toString();
     }
-
-    public byte[] getCodes(@NonNull Integer adventId) {
-        Advent advent = adventService.findById(adventId);
-        if (advent instanceof AdventByCode adventByCode) {
-            return String.join("\n", adventByCode.getCodes())
-                    .getBytes(StandardCharsets.UTF_8);
-        }
-
-        throw new AppException("Для данного адвента не предусмотрено кодов");
-    }
 }

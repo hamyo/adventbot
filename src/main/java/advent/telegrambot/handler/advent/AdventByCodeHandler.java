@@ -52,7 +52,7 @@ public class AdventByCodeHandler implements AdventHandler<AdventByCode> {
     @Override
     @Transactional
     public void afterStepSave(@NotNull AdventByCode advent) {
-        adventService.addCode(advent.getId());
+        adventService.addRandomCode(advent.getId());
     }
 
     @Override

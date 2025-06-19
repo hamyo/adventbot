@@ -17,10 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -132,7 +132,7 @@ public class AdventService {
     }
 
     @Transactional
-    public void addCode(@NonNull Integer id) {
+    public void addRandomCode(@NonNull Integer id) {
         Advent advent = findById(id);
         if (advent instanceof AdventByCode adventByCode) {
             while (adventByCode.getCodes().size() < stepRepository.countDistinctDaysByAdvent(advent)) {
@@ -140,6 +140,17 @@ public class AdventService {
                 adventByCode.getCodes().add(code);
             }
         }
+    }
+
+    @Transactional(readOnly = true)
+    public byte[] getCodes(@NonNull Integer adventId) {
+        Advent advent = findById(adventId);
+        if (advent instanceof AdventByCode adventByCode) {
+            return String.join("\n", adventByCode.getCodes())
+                    .getBytes(StandardCharsets.UTF_8);
+        }
+
+        throw new AppException("Для данного адвента не предусмотрено кодов");
     }
 
     @Transactional(readOnly = true)
