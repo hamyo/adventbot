@@ -1,13 +1,9 @@
 package advent.telegrambot.service;
 
-import advent.telegrambot.domain.advent.Advent;
-import advent.telegrambot.domain.advent.AdventByCode;
-import advent.telegrambot.utils.AppException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
 @Service
@@ -15,7 +11,6 @@ import java.util.Random;
 public class CodeService {
     private static final String ALLOWED_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final Random random = new Random();
-    private final AdventService adventService;
 
     public @NonNull String generateCode(int length) {
         if (length <= 0) {
