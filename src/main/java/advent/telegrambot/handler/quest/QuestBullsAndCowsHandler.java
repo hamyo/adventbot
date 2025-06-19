@@ -1,32 +1,20 @@
 package advent.telegrambot.handler.quest;
 
-import advent.telegrambot.classifier.QuestType;
 import advent.telegrambot.domain.AdventCurrentStep;
-import advent.telegrambot.domain.Step;
 import advent.telegrambot.domain.advent.Advent;
 import advent.telegrambot.domain.dto.BullsAndCowsResult;
 import advent.telegrambot.domain.quest.QuestBullsAndCows;
-import advent.telegrambot.handler.StepCreateHandler;
-import advent.telegrambot.repository.StepRepository;
-import advent.telegrambot.service.*;
-import advent.telegrambot.utils.AppException;
+import advent.telegrambot.service.AdventCurrentStepService;
+import advent.telegrambot.service.AdventService;
+import advent.telegrambot.service.StepCommon;
 import advent.telegrambot.utils.MessageUtils;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
-
-import java.util.*;
-
-import static advent.telegrambot.classifier.QuestType.BULLS_AND_COWS;
-import static advent.telegrambot.utils.MessageUtils.getTelegramUserId;
 
 @Component
 @RequiredArgsConstructor
