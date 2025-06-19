@@ -4,6 +4,7 @@ import advent.telegrambot.classifier.QuestType;
 import advent.telegrambot.domain.AdventCurrentStep;
 import advent.telegrambot.domain.Step;
 import advent.telegrambot.domain.advent.Advent;
+import advent.telegrambot.domain.dto.BullsAndCowsResult;
 import advent.telegrambot.domain.quest.QuestBullsAndCows;
 import advent.telegrambot.handler.StepCreateHandler;
 import advent.telegrambot.repository.StepRepository;
@@ -31,8 +32,6 @@ import static advent.telegrambot.utils.MessageUtils.getTelegramUserId;
 @RequiredArgsConstructor
 public class QuestBullsAndCowsService implements StepCreateHandler {
     private final AdventCurrentStepService adventCurrentStepService;
-    private final StepService stepService;
-    private final TelegramClient telegramClient;
     private final StepRepository stepRepository;
     private final AdminProgressService adminProgressService;
     private final StepCommon stepCommon;
@@ -41,37 +40,34 @@ public class QuestBullsAndCowsService implements StepCreateHandler {
     private final static String GUESS_WORD = "GUESS_WORD";
     private final static String NUMBER_OF_ATTEMPTS = "NUMBER_OF_ATTEMPTS";
     private final static int EXPECTED_ROWS = 3;
-
+    private final static int SYMBOLS_COUNT = 4;
 
     private int getNumberOfAttempts(Map<String, Object> data) {
         return (int) data.getOrDefault(NUMBER_OF_ATTEMPTS, 0);
     }
 
-    private void incrementNumberOfAttempts(Map<String, Object> data) {
+    private int incrementNumberOfAttempts(Map<String, Object> data) {
         int attempt = getNumberOfAttempts(data);
         data.put(NUMBER_OF_ATTEMPTS, attempt + 1);
+        return attempt + 1;
     }
 
     private char[] getGuessWord(Map<String, Object> data) {
         char[] word = (char[]) data.get(GUESS_WORD);
         if (word == null) {
             word = generateNumber();
-            saveGuessWord(data, word);
+            data.put(GUESS_WORD, word);
         }
 
         return word;
     }
 
-    private void saveGuessWord(Map<String, Object> data, char[] guessWord) {
-        data.put(GUESS_WORD, guessWord);
-    }
-
     private char[] generateNumber() {
         SplittableRandom random = new SplittableRandom();
         int number = random.nextInt(123, 9876);
-        char[] digits = StringUtils.leftPad(String.valueOf(number), 4, "0").toCharArray();
+        char[] digits = StringUtils.leftPad(String.valueOf(number), SYMBOLS_COUNT, "0").toCharArray();
 
-        Set<Character> usedDigits = new HashSet<>(4);
+        Set<Character> usedDigits = new HashSet<>(SYMBOLS_COUNT);
         Map<Integer, Character> repeatDigits = new HashMap<>(3);
         for (int i = 0; i < digits.length; i++) {
             if (usedDigits.contains(digits[i])) {
@@ -88,7 +84,7 @@ public class QuestBullsAndCowsService implements StepCreateHandler {
 
                 do {
                     genAttempt++;
-                    int num = genAttempt > 4 ? nextNumber++ : random.nextInt(0, 9);
+                    int num = genAttempt > SYMBOLS_COUNT ? nextNumber++ : random.nextInt(0, 9);
                     nextNum = (char) (num + '0');
                 } while (usedDigits.contains(nextNum));
 
@@ -100,74 +96,38 @@ public class QuestBullsAndCowsService implements StepCreateHandler {
         return digits;
     }
 
-    @SneakyThrows
-    @Override
     @Transactional
-    public void handle(@NotNull QuestBullsAndCows quest, Update update) {
-        Advent advent = quest.getStep().getAdvent();
-        AdventCurrentStep adventCurrentStep = adventCurrentStepService.findById(advent.getId());
-        Pair<Integer, Integer> result = checkAnswer(adventCurrentStep.getData(), MessageUtils.getMessageText(update));
-        incrementNumberOfAttempts(adventCurrentStep.getData());
-        int numberOfAttempts = getNumberOfAttempts(adventCurrentStep.getData());
-
-        SendMessage message = SendMessage.builder()
-                .chatId(advent.getChatId())
-                .text(String.format("Попытка %s: быков \uD83D\uDC02 %s, коров \uD83D\uDC04 %s",
-                        numberOfAttempts + 1,
-                        result.getLeft(),
-                        result.getRight()))
-                .build();
-        telegramClient.execute(message);
-
-        if (result.getLeft() == 4) {
-            message = SendMessage.builder()
-                    .chatId(advent.getChatId())
-                    .text("Задача решена! ✔\uFE0F")
-                    .build();
-            telegramClient.execute(message);
-
-            stepService.handleNextSteps(
-                    advent,
-                    adventCurrentStep.getStep().getDay(),
-                    adventCurrentStep.getStep().getOrder()
-            );
-        } else {
-            adventCurrentStepService.save(adventCurrentStep);
-        }
-    }
-
-    @Override
-    public Class<QuestBullsAndCows> getHandledQuestClass() {
-        return QuestBullsAndCows.class;
-    }
-
-    private @NonNull Pair<Integer, Integer> checkAnswer(Map<String, Object> data, String messageText) {
-        if (StringUtils.length(messageText) != 4) {
-            throw new AppException("В сообщении ожидаются 4 цифры");
+    public @NonNull BullsAndCowsResult checkAnswer(@NonNull Integer adventId, String messageText) {
+        if (StringUtils.length(messageText) != SYMBOLS_COUNT) {
+            throw new AppException("В сообщении ожидаются " + SYMBOLS_COUNT + " цифры");
         }
 
         if (!StringUtils.isNumeric(messageText)) {
-            throw new AppException("В сообщении ожидаются 4 цифры");
+            throw new AppException("В сообщении ожидаются " + SYMBOLS_COUNT + " цифры");
         }
 
+        AdventCurrentStep adventCurrentStep = adventCurrentStepService.findById(adventId);
+        int attemptCount = incrementNumberOfAttempts(adventCurrentStep.getData());
+
         char[] entered = messageText.toCharArray();
-        char[] guessWord = getGuessWord(data);
+        char[] guessWord = getGuessWord(adventCurrentStep.getData());
 
         int bullsCount = 0;
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < SYMBOLS_COUNT; i++) {
             if (entered[i] == guessWord[i]) {
                 bullsCount++;
             }
         }
 
-        if (bullsCount == 4) {
-            return Pair.of(4, 0);
+        if (bullsCount == SYMBOLS_COUNT) {
+            return BullsAndCowsResult.finished(bullsCount, 0, attemptCount);
         }
 
         Set<Character> intersection = new HashSet<>(formSet(guessWord));
         intersection.retainAll(formSet(entered));
         int cowsCount = intersection.size() - bullsCount;
-        return Pair.of(bullsCount, cowsCount);
+
+        return BullsAndCowsResult.notFinished(bullsCount, cowsCount, attemptCount);
     }
 
     private Set<Character> formSet(char[] symbols) {

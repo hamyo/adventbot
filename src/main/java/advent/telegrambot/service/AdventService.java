@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -139,5 +140,11 @@ public class AdventService {
                 adventByCode.getCodes().add(code);
             }
         }
+    }
+
+    @Transactional(readOnly = true)
+    public Advent findByStepsQuestsId(Long questId) {
+        return adventRepository.findByStepsQuestsId(questId)
+                .orElseThrow(() -> new AppException("Не найден адвент для задания id=" + questId));
     }
 }

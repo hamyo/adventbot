@@ -28,7 +28,7 @@ public class AdventCurrentStep {
     @Column(name = "a_id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "s_id")
     private Step step;
