@@ -14,16 +14,12 @@ import advent.telegrambot.utils.AppException;
 import advent.telegrambot.utils.MessageUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.Arrays;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static advent.telegrambot.classifier.QuestType.ALL_PERSON_ANSWER;
 import static advent.telegrambot.utils.MessageUtils.getTelegramUserId;
@@ -41,7 +37,6 @@ public class QuestWithAllPersonAnswerService implements StepCreateHandler {
     private final AdventCurrentStepService adventCurrentStepService;
 
     private final static int EXPECTED_ROWS = 5;
-    private final static String ALREADY_ANSWERED_PERSON_IDS = "ALREADY_ANSWERED_PERSON_IDS";
 
     private QuestType getQuestType() {
         return ALL_PERSON_ANSWER;
@@ -63,14 +58,9 @@ public class QuestWithAllPersonAnswerService implements StepCreateHandler {
                 .orElse(null);
 
         if (answeredPerson != null) {
-            Set<Long> alreadyAnsweredPersonIds = getAlreadyAnsweredPersonIds(adventCurrentStep.getData());
+            Set<Long> alreadyAnsweredPersonIds = adventCurrentStep.getData().getAlreadyAnsweredPersonIds();
             if (!alreadyAnsweredPersonIds.contains(answeredPersonId)) {
-                adventCurrentStep.getData().put(
-                        ALREADY_ANSWERED_PERSON_IDS,
-                        alreadyAnsweredPersonIds.stream()
-                                .map(Object::toString)
-                                .collect(Collectors.joining(","))
-                );
+                alreadyAnsweredPersonIds.add(answeredPersonId);
 
                 if (alreadyAnsweredPersonIds.size() == advent.getPersons().size()) {
                     return Pair.of(answeredPerson, true);
@@ -79,15 +69,6 @@ public class QuestWithAllPersonAnswerService implements StepCreateHandler {
         }
 
         return Pair.of(answeredPerson, false);
-    }
-
-    private Set<Long> getAlreadyAnsweredPersonIds(Map<String, Object> adventCurrentStepData) {
-        return Arrays.stream(
-                        String.valueOf(adventCurrentStepData.getOrDefault(ALREADY_ANSWERED_PERSON_IDS, "")).split(","))
-                .map(String::trim)
-                .filter(StringUtils::isNumeric)
-                .map(Long::parseLong)
-                .collect(Collectors.toSet());
     }
 
     @Override

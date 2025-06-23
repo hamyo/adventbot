@@ -10,9 +10,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.type.SqlTypes;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Getter
 @Setter
 @Entity
@@ -35,6 +32,12 @@ public class AdventCurrentStep {
 
     @Column(name = "acs_data")
     @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> data = new HashMap<>();
+    private AdventCurrentStepData data = new AdventCurrentStepData();
 
+    public AdventCurrentStepData getData() {
+        if (data == null) {
+            data = new AdventCurrentStepData();
+        }
+        return data;
+    }
 }

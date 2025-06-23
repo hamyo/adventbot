@@ -7,13 +7,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -25,12 +25,8 @@ import java.util.Set;
                 name = "Step.withContentAndQuests",
                 attributeNodes = {
                         @NamedAttributeNode("content"),
-                        @NamedAttributeNode(value = "quests", subgraph = "questsWithHints")
-                },
-                subgraphs = @NamedSubgraph(
-                        name = "questsWithHints",
-                        attributeNodes = @NamedAttributeNode("hints")
-                )
+                        @NamedAttributeNode("quests")
+                }
         )
 })
 public class Step {
@@ -59,6 +55,7 @@ public class Step {
     private Advent advent;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "step", fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT)
     private List<Quest> quests = new ArrayList<>();
 
     @Transient

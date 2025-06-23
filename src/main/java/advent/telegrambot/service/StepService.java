@@ -3,6 +3,7 @@ package advent.telegrambot.service;
 import advent.telegrambot.domain.AdventCurrentStep;
 import advent.telegrambot.domain.Step;
 import advent.telegrambot.domain.advent.Advent;
+import advent.telegrambot.domain.quest.Quest;
 import advent.telegrambot.repository.AdventCurrentStepRepository;
 import advent.telegrambot.repository.StepRepository;
 import advent.telegrambot.utils.AppException;
@@ -11,6 +12,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -56,5 +58,17 @@ public class StepService {
                 advent.getStartDate().plusDays(stepRepository.getMaxDaysByAdvent(advent) - 1).isAfter(advent.getFinishDate())) {
             advent.setFinishDate(null);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public Step findFullGraphById(@NonNull Long stepId) {
+        Step step = stepRepository.findFullGraphById(stepId).orElseThrow(() -> new AppException("Шаг с идентификатором " + stepId + " не найден"));
+        if (!step.getQuests().isEmpty()) {
+            for (Quest quest : step.getQuests()) {
+                Hibernate.initialize(quest.getHints());
+            }
+        }
+
+        return step;
     }
 }

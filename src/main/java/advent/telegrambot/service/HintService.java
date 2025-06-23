@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -20,19 +19,11 @@ public class HintService {
     private final AdventCurrentStepService adventCurrentStepService;
     private final AdventService adventService;
 
-    private final static String SHOWED_HINT_ID = "SHOWED_HINT_ID";
-
-    private @NonNull Long getShowedHintId(@NonNull Map<String, Object> data) {
-        return (Long) data.getOrDefault(SHOWED_HINT_ID, -1L);
-    }
-
     @Transactional
     public void saveShowedHintId(@NonNull Long chatId, @NonNull Long hintId) {
         Advent advent = adventService.findByChatId(chatId);
         AdventCurrentStep currentStep = adventCurrentStepService.findById(advent.getId());
-        Map<String, Object> data = currentStep.getData();
-        data.put(SHOWED_HINT_ID, hintId);
-        adventCurrentStepService.save(currentStep);
+        currentStep.getData().setShowedHintId(hintId);
     }
 
     @Transactional(readOnly = true)
@@ -47,7 +38,7 @@ public class HintService {
             return null;
         }
 
-        Long showedHintId = getShowedHintId(currentStep.getData());
+        Long showedHintId = currentStep.getData().getShowedHintId();
         return quest.getHints().stream()
                 .filter(hint -> hint.getId().compareTo(showedHintId) > 0)
                 .findFirst()

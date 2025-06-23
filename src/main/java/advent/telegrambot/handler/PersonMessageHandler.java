@@ -7,10 +7,7 @@ import advent.telegrambot.handler.advent.AdventHandlerFactory;
 import advent.telegrambot.handler.quest.QuestHandlerFactory;
 import advent.telegrambot.repository.AdventCurrentStepRepository;
 import advent.telegrambot.repository.StepRepository;
-import advent.telegrambot.service.AdventService;
-import advent.telegrambot.service.PersonService;
-import advent.telegrambot.service.StepCommon;
-import advent.telegrambot.service.StepService;
+import advent.telegrambot.service.*;
 import advent.telegrambot.utils.AppException;
 import advent.telegrambot.utils.DateUtils;
 import advent.telegrambot.utils.MessageUtils;
@@ -32,7 +29,7 @@ import static advent.telegrambot.utils.MessageUtils.getTelegramUserId;
 public class PersonMessageHandler implements MessageHandler {
     private final PersonService personService;
     private final AdventService adventService;
-    private final AdventCurrentStepRepository adventCurrentStepRepository;
+    private final AdventCurrentStepService adventCurrentStepService;
     private final StepRepository stepRepository;
     private final TelegramClient telegramClient;
     private final QuestHandlerFactory questHandlerFactory;
@@ -69,8 +66,8 @@ public class PersonMessageHandler implements MessageHandler {
         Advent advent = adventService.findByChatId(chatId);
         short stepDay = getAdventDay(advent);
 
-        Optional<AdventCurrentStep> savedCurrentStep = adventCurrentStepRepository.findById(advent.getId());
-        Step currentStep = savedCurrentStep.map(AdventCurrentStep::getStep).orElse(null);
+        Step currentStep = adventCurrentStepService.getById(advent.getId())
+                .map(AdventCurrentStep::getStep).orElse(null);
         if (currentStep == null || currentStep.getDay() != stepDay) {
             // Стартуем новый день
             startDay(advent, stepDay, MessageUtils.getMessageText(update));

@@ -2,26 +2,25 @@ package advent.telegrambot.handler.quest;
 
 import advent.telegrambot.classifier.QuestType;
 import advent.telegrambot.domain.AdventCurrentStep;
+import advent.telegrambot.domain.AdventCurrentStepData;
 import advent.telegrambot.domain.Step;
-import advent.telegrambot.domain.advent.Advent;
 import advent.telegrambot.domain.dto.BullsAndCowsResult;
 import advent.telegrambot.domain.quest.QuestBullsAndCows;
 import advent.telegrambot.handler.StepCreateHandler;
 import advent.telegrambot.repository.StepRepository;
-import advent.telegrambot.service.*;
+import advent.telegrambot.service.AdminProgressService;
+import advent.telegrambot.service.AdventCurrentStepService;
+import advent.telegrambot.service.ClsQuestTypeService;
+import advent.telegrambot.service.StepCommon;
 import advent.telegrambot.utils.AppException;
 import advent.telegrambot.utils.MessageUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import java.util.*;
 
@@ -37,26 +36,21 @@ public class QuestBullsAndCowsService implements StepCreateHandler {
     private final StepCommon stepCommon;
     private final ClsQuestTypeService clsQuestTypeService;
 
-    private final static String GUESS_WORD = "GUESS_WORD";
-    private final static String NUMBER_OF_ATTEMPTS = "NUMBER_OF_ATTEMPTS";
     private final static int EXPECTED_ROWS = 3;
     private final static int SYMBOLS_COUNT = 4;
 
-    private int getNumberOfAttempts(Map<String, Object> data) {
-        return (int) data.getOrDefault(NUMBER_OF_ATTEMPTS, 0);
-    }
 
-    private int incrementNumberOfAttempts(Map<String, Object> data) {
-        int attempt = getNumberOfAttempts(data);
-        data.put(NUMBER_OF_ATTEMPTS, attempt + 1);
+    private int incrementNumberOfAttempts(AdventCurrentStepData data) {
+        int attempt = data.getNumberOfAttempts() != null ? data.getNumberOfAttempts() : 0;
+        data.setNumberOfAttempts(attempt + 1);
         return attempt + 1;
     }
 
-    private char[] getGuessWord(Map<String, Object> data) {
-        char[] word = (char[]) data.get(GUESS_WORD);
+    private char[] getGuessWord(AdventCurrentStepData data) {
+        char[] word = data.getGuessWord();
         if (word == null) {
             word = generateNumber();
-            data.put(GUESS_WORD, word);
+            data.setGuessWord(word);
         }
 
         return word;

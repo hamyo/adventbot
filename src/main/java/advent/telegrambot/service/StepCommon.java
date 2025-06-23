@@ -64,6 +64,16 @@ public class StepCommon {
                             content.getNotEmptyName()))
                     .build();
             telegramClient.execute(message);
+        } else if (DataType.DOCUMENT.equals(content.getType())) {
+            SendDocument message = SendDocument.builder()
+                    .chatId(chatId)
+                    .replyMarkup(markup)
+                    .caption(content.getCaption())
+                    .document(new InputFile(
+                            new ByteArrayInputStream(content.getData()),
+                            content.getNotEmptyName()))
+                    .build();
+            telegramClient.execute(message);
         } else if (DataType.AUDIO.equals(content.getType())) {
             SendAudio message = SendAudio.builder()
                     .chatId(chatId)
@@ -158,8 +168,7 @@ public class StepCommon {
 
     @SneakyThrows
     private void handle(@NonNull Long stepId, @NonNull Advent advent) {
-        Step step = stepRepository.findFullGraphById(stepId)
-                .orElseThrow(() -> new AppException("Не найден шаг с id=" + stepId));
+        Step step = stepService.findFullGraphById(stepId);
         InlineKeyboardMarkup markup = step.getQuests().isEmpty() || step.getQuests().getFirst().getHints().isEmpty() ?
                 null :
                 MessageUtils.getHintActionKeyboard();
