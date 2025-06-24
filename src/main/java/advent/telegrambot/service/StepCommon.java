@@ -182,11 +182,11 @@ public class StepCommon {
                     .text(step.getText())
                     .build();
             telegramClient.execute(message);
-
-            adventCurrentStepService.save(new AdventCurrentStep(
-                    advent.getId(),
-                    step
-            ));
         }
+
+        adventCurrentStepService.save(new AdventCurrentStep(
+                advent.getId(),
+                step
+        ));
     }
 }
