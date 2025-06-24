@@ -48,7 +48,7 @@ public class AdventCreateGetHandler implements MessageHandler {
                         """)
                 .replyMarkup(getInlineKeyboardMarkup())
                 .build();
-        telegramClient.executeAsync(response);
+        telegramClient.execute(response);
     }
 
     private InlineKeyboardMarkup getInlineKeyboardMarkup() {

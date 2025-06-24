@@ -54,7 +54,7 @@ public class HintHandler implements MessageHandler {
                         .text(hint.getText())
                         .replyMarkup(nextHint.getFirst() ? getHintActionKeyboard() : null)
                         .build();
-                telegramClient.executeAsync(message);
+                telegramClient.execute(message);
                 hintService.saveShowedHintId(chatId, hint.getId());
             }
         }

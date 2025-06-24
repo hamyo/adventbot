@@ -29,7 +29,7 @@ public class AdminAddHandler implements MessageHandler {
         person.setIsAdmin(true);
         person.setNameNominative(MessageUtils.tryGetUserName(update.getMessage()));
         personRepository.save(person);
-        telegramClient.executeAsync(
+        telegramClient.execute(
                 SendMessage.builder()
                         .chatId(MessageUtils.getChatId(update))
                         .text("Администратор " + person.getNameNominative() + "(id=" + person.getId() + ") успешно добавлен")

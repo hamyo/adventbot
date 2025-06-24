@@ -26,7 +26,7 @@ public class AdminProgressClearHandler implements MessageHandler {
     @Override
     public void handle(Update update) {
         adminProgressService.delete(MessageUtils.getTelegramUserId(update));
-        telegramClient.executeAsync(
+        telegramClient.execute(
                 SendMessage.builder()
                         .chatId(MessageUtils.getChatId(update))
                         .text("Прогресс администратора очищен.")

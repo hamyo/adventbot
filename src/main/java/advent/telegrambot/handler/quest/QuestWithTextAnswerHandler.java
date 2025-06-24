@@ -45,7 +45,7 @@ public class QuestWithTextAnswerHandler implements QuestHandler<QuestWithTextAns
                     .chatId(advent.getChatId())
                     .text("Ответ неверный❌")
                     .build();
-            telegramClient.executeAsync(message);
+            telegramClient.execute(message);
         }
     }
 

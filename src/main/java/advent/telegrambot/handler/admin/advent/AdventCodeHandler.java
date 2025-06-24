@@ -8,6 +8,7 @@ import advent.telegrambot.service.AdventService;
 import advent.telegrambot.service.PersonService;
 import advent.telegrambot.utils.MessageUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
@@ -16,6 +17,7 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import java.io.ByteArrayInputStream;
 
+import static advent.telegrambot.handler.TelegramCommand.ADVENTS_CODES;
 import static advent.telegrambot.handler.TelegramCommand.ADVENTS_PERSONS;
 
 @Component
@@ -26,9 +28,10 @@ public class AdventCodeHandler implements MessageHandler {
     private final TelegramClient telegramClient;
     private final AdventHandlerFactory adventHandlerFactory;
 
+    @SneakyThrows
     @Override
     public void handle(Update update) {
-        Integer adventId = ADVENTS_PERSONS.getIdFromAction(MessageUtils.getMessageText(update));
+        Integer adventId = ADVENTS_CODES.getIdFromAction(MessageUtils.getMessageText(update));
         Advent advent = adventService.findById(adventId);
 
         SendDocument message = SendDocument.builder()
@@ -38,7 +41,7 @@ public class AdventCodeHandler implements MessageHandler {
                         "Коды_к_адвенту.txt"))
                 .replyMarkup(adventHandlerFactory.getAdminKeyboard(advent))
                 .build();
-        telegramClient.executeAsync(message);
+        telegramClient.execute(message);
     }
 
     @Override

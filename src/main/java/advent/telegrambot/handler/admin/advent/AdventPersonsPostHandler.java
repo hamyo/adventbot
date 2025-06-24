@@ -85,7 +85,7 @@ public class AdventPersonsPostHandler implements MessageHandler {
                 .text("Участники (количество " + persons.size() + ") успешно добавлены или обновлены")
                 .replyMarkup(adventHandlerFactory.getAdminKeyboard(adventService.findById(adventId)))
                 .build();
-        telegramClient.executeAsync(response);
+        telegramClient.execute(response);
     }
 
     @Override

@@ -40,7 +40,7 @@ public class AdventStepsGetHandler implements MessageHandler {
                 .text(messageText)
                 .replyMarkup(MessageUtils.getStepActionKeyboard(adventId, questTypes))
                 .build();
-        telegramClient.executeAsync(response);
+        telegramClient.execute(response);
     }
 
     @Override

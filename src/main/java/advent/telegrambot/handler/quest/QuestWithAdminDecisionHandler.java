@@ -35,7 +35,7 @@ public class QuestWithAdminDecisionHandler implements QuestHandler<QuestWithAdmi
                     stepCommon.handleNextSteps(advent);
                 }, () -> {
                     try {
-                        telegramClient.executeAsync(
+                        telegramClient.execute(
                                 SendMessage.builder()
                                         .chatId(advent.getChatId())
                                         .text("Нужно одобрение администратора")

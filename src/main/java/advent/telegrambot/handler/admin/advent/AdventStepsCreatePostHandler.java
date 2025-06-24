@@ -49,7 +49,7 @@ public class AdventStepsCreatePostHandler implements MessageHandler {
                         clsQuestTypeRepository.findAll()
                 ))
                 .build();
-        telegramClient.executeAsync(response);
+        telegramClient.execute(response);
     }
 
     @Override

@@ -49,7 +49,7 @@ public class AdventNotFinishedHandler implements MessageHandler {
                 .text(StringUtils.isEmpty(message) ? "Список пуст" : message)
                 .replyMarkup(getInlineKeyboardMarkup(adventInfo))
                 .build();
-        telegramClient.executeAsync(response);
+        telegramClient.execute(response);
     }
 
     @NotNull

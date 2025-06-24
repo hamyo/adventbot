@@ -42,7 +42,7 @@ public class AdventStepsCreateGetHandler implements MessageHandler {
                         adventHandlerFactory.getAdminKeyboard(
                                 adventService.findById(ids.getLeft())))
                 .build();
-        telegramClient.executeAsync(response);
+        telegramClient.execute(response);
     }
 
     @Override

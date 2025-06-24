@@ -30,7 +30,7 @@ public class HelloHandler implements MessageHandler {
                 .chatId(chatId)
                 .text(advent.getHelloMessage())
                 .build();
-        telegramClient.executeAsync(message);
+        telegramClient.execute(message);
     }
 
     @Override

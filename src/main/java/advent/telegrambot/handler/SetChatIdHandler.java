@@ -23,7 +23,7 @@ public class SetChatIdHandler implements MessageHandler {
     public void handle(Update update) {
         Long chatId = MessageUtils.getChatId(update);
         adventService.setChatId(chatId);
-        telegramClient.executeAsync(
+        telegramClient.execute(
                 SendMessage.builder()
                         .chatId(chatId)
                         .text("Id чата успешно установлено для адвента")

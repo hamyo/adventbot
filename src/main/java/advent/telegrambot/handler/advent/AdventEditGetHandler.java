@@ -24,7 +24,7 @@ public class AdventEditGetHandler implements MessageHandler {
     @Override
     public void handle(Update update) {
         Integer adventId = TelegramCommand.ADVENTS_EDIT.getIdFromAction(MessageUtils.getMessageText(update));
-        telegramClient.executeAsync(
+        telegramClient.execute(
                 SendMessage.builder()
                         .text("Для изменения данных, выберите нужный пункт из меню")
                         .chatId(MessageUtils.getChatId(update))

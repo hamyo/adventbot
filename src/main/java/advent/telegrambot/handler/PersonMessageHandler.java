@@ -79,7 +79,7 @@ public class PersonMessageHandler implements MessageHandler {
                         currentStep.getDay(),
                         currentStep.getOrder());
                 if (nextStep.isEmpty()) {
-                    telegramClient.executeAsync(
+                    telegramClient.execute(
                             SendMessage.builder()
                                     .chatId(chatId)
                                     .text("Задания на сегодня закончены\uD83D\uDE0B.")
