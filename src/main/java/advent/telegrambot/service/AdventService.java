@@ -42,11 +42,6 @@ public class AdventService {
     }
 
     @Transactional(readOnly = true)
-    public void getFullInfo(@NonNull Advent advent, @NonNull OutputStream stream) {
-
-    }
-
-    @Transactional(readOnly = true)
     public List<CheckError> check(@NonNull Integer id) {
         List<CheckError> errors = new ArrayList<>();
         Advent advent = findById(id);

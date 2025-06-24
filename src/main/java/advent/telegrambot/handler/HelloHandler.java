@@ -26,8 +26,7 @@ public class HelloHandler implements MessageHandler {
     public void handle(Update update) {
         long chatId = MessageUtils.getChatId(update);
         Advent advent = adventService.findByChatId(chatId);
-        SendMessage message = SendMessage // Create a message object
-                .builder()
+        SendMessage message = SendMessage.builder()
                 .chatId(chatId)
                 .text(advent.getHelloMessage())
                 .build();
