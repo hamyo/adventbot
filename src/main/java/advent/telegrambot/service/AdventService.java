@@ -126,17 +126,6 @@ public class AdventService {
                 .orElseThrow(() -> new AppException("Не удалось найти адвент с id=" + id));
     }
 
-    @Transactional
-    public void addRandomCode(@NonNull Integer id) {
-        Advent advent = findById(id);
-        if (advent instanceof AdventByCode adventByCode) {
-            while (adventByCode.getCodes().size() < stepRepository.countDistinctDaysByAdvent(advent)) {
-                String code = codeService.generateCode(10);
-                adventByCode.getCodes().add(code);
-            }
-        }
-    }
-
     @Transactional(readOnly = true)
     public byte[] getCodes(@NonNull Integer adventId) {
         Advent advent = findById(adventId);

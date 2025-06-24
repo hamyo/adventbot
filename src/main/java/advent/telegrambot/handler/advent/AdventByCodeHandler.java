@@ -26,15 +26,12 @@ import static advent.telegrambot.handler.TelegramCommand.ADVENTS_CODES;
 @RequiredArgsConstructor
 public class AdventByCodeHandler implements AdventHandler<AdventByCode> {
     private final StepCommon stepCommon;
-    private final AdventService adventService;
+    private final AdventByCodeService adventByCodeService;
 
     public void startDay(@NotNull AdventByCode advent, @NonNull Short day, String messageText) {
-        String foundCode = advent.getCodes().stream()
-                .filter(code -> StringUtils.equalsIgnoreCase(code, messageText))
-                .findFirst()
-                .orElseThrow(() -> new AppException("Указанный код не найден"));
+        String code = adventByCodeService.checkCode(advent.getId(), messageText);
         stepCommon.handleStartDayStep(advent, day);
-        advent.getCodes().remove(foundCode);
+        adventByCodeService.deleteCode(advent.getId(), code);
     }
 
     @Override
@@ -52,7 +49,7 @@ public class AdventByCodeHandler implements AdventHandler<AdventByCode> {
     @Override
     @Transactional
     public void afterStepSave(@NotNull AdventByCode advent) {
-        adventService.addRandomCode(advent.getId());
+        adventByCodeService.addRandomCode(advent.getId());
     }
 
     @Override
