@@ -38,7 +38,7 @@ public class HintService {
             return null;
         }
 
-        Long showedHintId = currentStep.getData().getShowedHintId();
+        Long showedHintId = currentStep.getData().getNotEmptyShowedHintId();
         return quest.getHints().stream()
                 .filter(hint -> hint.getId().compareTo(showedHintId) > 0)
                 .findFirst()
