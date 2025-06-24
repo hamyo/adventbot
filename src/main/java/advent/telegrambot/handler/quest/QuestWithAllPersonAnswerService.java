@@ -59,12 +59,10 @@ public class QuestWithAllPersonAnswerService implements StepCreateHandler {
 
         if (answeredPerson != null) {
             Set<Long> alreadyAnsweredPersonIds = adventCurrentStep.getData().getAlreadyAnsweredPersonIds();
-            if (!alreadyAnsweredPersonIds.contains(answeredPersonId)) {
-                alreadyAnsweredPersonIds.add(answeredPersonId);
+            alreadyAnsweredPersonIds.add(answeredPersonId);
 
-                if (alreadyAnsweredPersonIds.size() == advent.getPersons().size()) {
-                    return Pair.of(answeredPerson, true);
-                }
+            if (alreadyAnsweredPersonIds.size() == advent.getPersons().size()) {
+                return Pair.of(answeredPerson, true);
             }
         }
 
