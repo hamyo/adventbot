@@ -31,8 +31,7 @@ public class HintHandler implements MessageHandler {
         long chatId = MessageUtils.getChatId(update);
         Pair<Boolean, Hint> nextHint = hintService.getNextHint(chatId);
         if (nextHint == null) {
-            SendMessage message = SendMessage
-                    .builder()
+            SendMessage message = SendMessage.builder()
                     .chatId(chatId)
                     .text("Здесь я не знаю, что подсказать \uD83D\uDE28 ")
                     .build();
@@ -50,8 +49,7 @@ public class HintHandler implements MessageHandler {
             }
 
             if (StringUtils.isNotBlank(hint.getText())) {
-                SendMessage message = SendMessage
-                        .builder()
+                SendMessage message = SendMessage.builder()
                         .chatId(chatId)
                         .text(hint.getText())
                         .replyMarkup(nextHint.getFirst() ? getHintActionKeyboard() : null)

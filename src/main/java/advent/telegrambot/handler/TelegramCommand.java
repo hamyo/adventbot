@@ -24,8 +24,8 @@ public enum TelegramCommand {
     ADVENTS_EDIT("/advents/{id}", "Редактировать", "^\\/advents\\/(\\d+)$"),
     ADVENTS_PERSONS("/advents/{id}/persons", "Участники", "^\\/advents\\/(\\d+)\\/persons$"),
     ADVENTS_STEPS("/advents/{id}/steps", "Шаги", "^\\/advents\\/(\\d+)\\/steps$"),
-    ADVENTS_CODES("/advents/{id}/codes", "Коды адвента", "^\\/advents\\/(\\d+)\\/codes"),
-    ADVENTS_FULL_INFO("/advents/{id}/fullinfo", "Полная информация", "^\\/advents\\/(\\d+)\\/fullinfo"),
+    ADVENTS_CODES("/advents/{id}/codes", "Коды адвента", "^\\/advents\\/(\\d+)\\/codes$"),
+    ADVENTS_FULL_INFO("/advents/{id}/fullinfo", "Полная информация", "^\\/advents\\/(\\d+)\\/fullinfo$"),
     ADVENTS_STEPS_CREATE("/advents/{id}/steps/create", "Создание шага адвента", "^\\/advents\\/(\\d+)\\/steps\\/create(\\?questTypeId=(\\d+))?$"),
     ADVENTS_STEPS_CREATED("/advents/{id}/steps/created", "Шаг создан"),
 

@@ -175,8 +175,7 @@ public class StepCommon {
 
         sendContentMessage(step.getContent(), advent.getChatId(), markup);
         if (StringUtils.isNoneBlank(step.getText())) {
-            SendMessage message = SendMessage // Create a message object
-                    .builder()
+            SendMessage message = SendMessage.builder()
                     .chatId(advent.getChatId())
                     .replyMarkup(markup)
                     .text(step.getText())

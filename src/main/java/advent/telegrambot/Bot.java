@@ -49,8 +49,7 @@ public class Bot implements SpringLongPollingBot, LongPollingSingleThreadUpdateC
     }
 
     private void handleError(String errorMessage, Update update) {
-        SendMessage message = SendMessage // Create a message object
-                .builder()
+        SendMessage message = SendMessage.builder()
                 .chatId(MessageUtils.getChatId(update))
                 .text("⚠\uFE0F" + errorMessage + "⚠\uFE0F")
                 .build();

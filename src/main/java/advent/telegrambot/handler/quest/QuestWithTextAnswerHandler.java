@@ -33,8 +33,7 @@ public class QuestWithTextAnswerHandler implements QuestHandler<QuestWithTextAns
         Advent advent = adventService.findByStepsQuestsId(quest.getId());
 
         if (isAnswerRight(quest.getRightValues(), update)) {
-            SendMessage message = SendMessage
-                    .builder()
+            SendMessage message = SendMessage.builder()
                     .chatId(advent.getChatId())
                     .text("Верно✅\uD83D\uDD25")
                     .build();
@@ -42,8 +41,7 @@ public class QuestWithTextAnswerHandler implements QuestHandler<QuestWithTextAns
 
             stepCommon.handleNextSteps(advent);
         } else {
-            SendMessage message = SendMessage
-                    .builder()
+            SendMessage message = SendMessage.builder()
                     .chatId(advent.getChatId())
                     .text("Ответ неверный❌")
                     .build();

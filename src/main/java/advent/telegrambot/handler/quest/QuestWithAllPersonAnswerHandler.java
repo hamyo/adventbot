@@ -39,8 +39,7 @@ public class QuestWithAllPersonAnswerHandler implements QuestHandler<QuestWithAl
         Pair<Person, Boolean> checkResult = questWithAllPersonAnswerService.checkAnswer(advent.getId(), answeredPersonId);
 
         if (checkResult.getLeft() != null) {
-            SendMessage message = SendMessage
-                    .builder()
+            SendMessage message = SendMessage.builder()
                     .chatId(advent.getChatId())
                     .text(MessageUtils.getResponseTextForUser(checkResult.getLeft().getNameNominative()))
                     .build();
