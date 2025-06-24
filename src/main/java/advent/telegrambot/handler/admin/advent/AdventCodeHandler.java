@@ -16,6 +16,8 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import java.io.ByteArrayInputStream;
 
+import static advent.telegrambot.handler.TelegramCommand.ADVENTS_PERSONS;
+
 @Component
 @RequiredArgsConstructor
 public class AdventCodeHandler implements MessageHandler {
@@ -26,12 +28,11 @@ public class AdventCodeHandler implements MessageHandler {
 
     @Override
     public void handle(Update update) {
-        Long chatId = MessageUtils.getChatId(update);
-        Advent advent = adventService.findByChatId(chatId);
+        Integer adventId = ADVENTS_PERSONS.getIdFromAction(MessageUtils.getMessageText(update));
+        Advent advent = adventService.findById(adventId);
 
-        SendDocument message = SendDocument
-                .builder()
-                .chatId(chatId)
+        SendDocument message = SendDocument.builder()
+                .chatId(MessageUtils.getChatId(update))
                 .document(new InputFile(
                         new ByteArrayInputStream(adventService.getCodes(advent.getId())),
                         "Коды_к_адвенту.txt"))
@@ -43,6 +44,6 @@ public class AdventCodeHandler implements MessageHandler {
     @Override
     public boolean canHandle(Update update) {
         return TelegramCommand.ADVENTS_CODES.is(update) &&
-                personService.isExist(MessageUtils.getTelegramUserId(update));
+                personService.isAdmin(MessageUtils.getTelegramUserId(update));
     }
 }
