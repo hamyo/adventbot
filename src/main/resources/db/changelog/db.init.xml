@@ -120,7 +120,9 @@
             </column>
             <column name="q_right_values" remarks="Правильные ответы" type="VARCHAR[]"/>
             <column name="q_allowed_answer_types" remarks="Допустимые типы ответа" type="INT2[]"/>
-            <column name="s_id" remarks="Идентификатор шага" type="BIGINT"/>
+            <column name="s_id" remarks="Идентификатор шага" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
     <changeSet id="1746985319977-7" author="Alexey.Kuzkin (generated)">
