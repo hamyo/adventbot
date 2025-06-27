@@ -142,4 +142,9 @@ public class AdventService {
         return adventRepository.findByStepsQuestsId(questId)
                 .orElseThrow(() -> new AppException("Не найден адвент для задания id=" + questId));
     }
+
+    @Transactional
+    public void finish(@NonNull Integer adventId) {
+        findById(adventId).setFinishDate(LocalDate.now());
+    }
 }

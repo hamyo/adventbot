@@ -86,6 +86,31 @@ public class MessageUtils {
         return new InlineKeyboardMarkup(stepButtons);
     }
 
+    public static InlineKeyboardMarkup getAdminCodesActionKeyboard(@NonNull Integer adventId) {
+        List<InlineKeyboardRow> menu = new ArrayList<>(3);
+
+        menu.add(new InlineKeyboardRow(
+                Arrays.asList(
+                        InlineKeyboardButton.builder()
+                                .text(ADVENTS_CODES_ADD.getRusName())
+                                .callbackData(TelegramCommand.getAdventCodeAddCommand(adventId))
+                                .build())));
+        menu.add(new InlineKeyboardRow(
+                Arrays.asList(
+                        InlineKeyboardButton.builder()
+                                .text(ADVENTS_CODES_DOWNLOAD.getRusName())
+                                .callbackData(TelegramCommand.getAdventCodeDownloadCommand(adventId))
+                                .build())));
+        menu.add(new InlineKeyboardRow(
+                Collections.singletonList(
+                        InlineKeyboardButton.builder()
+                                .text("Назад")
+                                .callbackData(TelegramCommand.getEditCommand(adventId))
+                                .build()
+                )));
+        return new InlineKeyboardMarkup(menu);
+    }
+
     public static List<InlineKeyboardRow> getAdminActionKeyboard(@NonNull Integer adventId) {
         List<InlineKeyboardRow> menu = new ArrayList<>();
         menu.add(new InlineKeyboardRow(

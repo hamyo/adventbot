@@ -25,6 +25,8 @@ public enum TelegramCommand {
     ADVENTS_PERSONS("/advents/{id}/persons", "Участники", "^\\/advents\\/(\\d+)\\/persons$"),
     ADVENTS_STEPS("/advents/{id}/steps", "Шаги", "^\\/advents\\/(\\d+)\\/steps$"),
     ADVENTS_CODES("/advents/{id}/codes", "Коды адвента", "^\\/advents\\/(\\d+)\\/codes$"),
+    ADVENTS_CODES_ADD("/advents/{id}/codes/add", "Добавить коды", "^\\/advents\\/(\\d+)\\/codes/add"),
+    ADVENTS_CODES_DOWNLOAD("/advents/{id}/codes/download", "Скачать коды", "^\\/advents\\/(\\d+)\\/codes/download$"),
     ADVENTS_FULL_INFO("/advents/{id}/fullinfo", "Полная информация", "^\\/advents\\/(\\d+)\\/fullinfo$"),
     ADVENTS_STEPS_CREATE("/advents/{id}/steps/create", "Создание шага адвента", "^\\/advents\\/(\\d+)\\/steps\\/create(\\?questTypeId=(\\d+))?$"),
     ADVENTS_STEPS_CREATED("/advents/{id}/steps/created", "Шаг создан"),
@@ -114,6 +116,14 @@ public enum TelegramCommand {
 
     public static String getAdventStepCommand(@NonNull Integer adventId) {
         return getCommandWithId(adventId, TelegramCommand.ADVENTS_STEPS);
+    }
+
+    public static String getAdventCodeAddCommand(@NonNull Integer adventId) {
+        return getCommandWithId(adventId, TelegramCommand.ADVENTS_CODES_ADD);
+    }
+
+    public static String getAdventCodeDownloadCommand(@NonNull Integer adventId) {
+        return getCommandWithId(adventId, TelegramCommand.ADVENTS_CODES_DOWNLOAD);
     }
 
     public static String getAdventFullInfoCommand(@NonNull Integer adventId) {

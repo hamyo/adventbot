@@ -93,6 +93,6 @@ public class AdventPersonsPostHandler implements MessageHandler {
         long personId = MessageUtils.getTelegramUserId(update);
         return adminProgressService.isCurrentCommand(personId, ADVENTS_PERSONS) &&
                 TelegramCommand.isNotAnyCommand(update) &&
-                personService.isAdmin(MessageUtils.getTelegramUserId(update));
+                personService.isAdmin(personId);
     }
 }

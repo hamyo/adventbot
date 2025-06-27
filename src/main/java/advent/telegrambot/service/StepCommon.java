@@ -161,7 +161,7 @@ public class StepCommon {
                     lastStep.getAdvent().getId(),
                     lastStep.getDay(),
                     lastStep.getOrder())) {
-                lastStep.getAdvent().setFinishDate(LocalDate.now());
+                adventService.finish(advent.getId());
             }
         }
     }

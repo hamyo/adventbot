@@ -12,6 +12,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Iterator;
+
 @Service
 @RequiredArgsConstructor
 public class AdventByCodeService {
@@ -21,15 +25,54 @@ public class AdventByCodeService {
 
     @Transactional
     public void addRandomCode(@NonNull Integer id) {
+        AdventByCode adventByCode = findById(id);
+        int needCodesCount = getNeedCodesCount(adventByCode, LocalDate.now());
+        while (adventByCode.getCodes().size() < needCodesCount) {
+            String code = codeService.generateCode(10);
+            adventByCode.getCodes().add(code);
+        }
+    }
+
+    private AdventByCode findById(@NonNull Integer id) {
         Advent advent = adventService.findById(id);
         if (advent instanceof AdventByCode adventByCode) {
-            while (adventByCode.getCodes().size() < stepRepository.countDistinctDaysByAdvent(advent)) {
-                String code = codeService.generateCode(10);
-                adventByCode.getCodes().add(code);
-            }
+            return adventByCode;
         } else {
             throw new AppException("Адвент " + id + " не того типа");
         }
+    }
+
+    @Transactional
+    public void addCodes(@NonNull Integer id, short daysCount) {
+        AdventByCode adventByCode = findById(id);
+        int diff = adventByCode.getCodes().size() - daysCount;
+        if (diff < 0) {
+            while (diff < 0) {
+                String code = codeService.generateCode(10);
+                if (!adventByCode.getCodes().contains(code)) {
+                    adventByCode.getCodes().add(code);
+                    diff++;
+                }
+            }
+        } else if (diff > 0) {
+            Iterator<String> iterator = adventByCode.getCodes().iterator();
+            while (iterator.hasNext() && diff > 0) {
+                iterator.next();
+                iterator.remove();
+                diff--;
+            }
+        }
+    }
+
+    int getNeedCodesCount(@NonNull AdventByCode adventByCode, @NonNull LocalDate currentDate) {
+        int days = Math.toIntExact(currentDate.isAfter(adventByCode.getStartDate()) ?
+                        stepRepository.countDistinctDaysByAdvent(adventByCode) -
+                ChronoUnit.DAYS.between(
+                        adventByCode.getStartDate(),
+                        currentDate) :
+                stepRepository.countDistinctDaysByAdvent(adventByCode));
+        return Math.max(days, 0);
+
     }
 
     @Transactional(readOnly = true)

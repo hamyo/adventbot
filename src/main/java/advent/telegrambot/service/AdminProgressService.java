@@ -35,14 +35,23 @@ public class AdminProgressService {
         adminProgressRepository.save(adminProgress);
     }
 
-    @Transactional
-    public void saveAdventId(long personId, @NonNull Integer id) {
+    private void saveAdventId(long personId, @NonNull Integer id, @NonNull TelegramCommand command) {
         AdminProgress adminProgress = new AdminProgress(
                 personId,
                 Map.of(
-                        COMMAND_FIELD, ADVENTS_PERSONS.name(),
+                        COMMAND_FIELD, command.name(),
                         ADVENT_ID_FIELD, id.toString()));
         adminProgressRepository.save(adminProgress);
+    }
+
+    @Transactional
+    public void savePersonAdventId(long personId, @NonNull Integer id) {
+        saveAdventId(personId, id, ADVENTS_PERSONS);
+    }
+
+    @Transactional
+    public void saveCodeAdventId(long personId, @NonNull Integer id) {
+        saveAdventId(personId, id, ADVENTS_CODES_ADD);
     }
 
     public void saveStepId(long personId, @NonNull Long id) {

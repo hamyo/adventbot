@@ -1,48 +1,45 @@
 package advent.telegrambot.handler.admin.advent;
 
-import advent.telegrambot.domain.advent.Advent;
 import advent.telegrambot.handler.MessageHandler;
-import advent.telegrambot.handler.TelegramCommand;
-import advent.telegrambot.handler.advent.AdventHandlerFactory;
-import advent.telegrambot.service.AdventService;
+import advent.telegrambot.service.AdminProgressService;
 import advent.telegrambot.service.PersonService;
 import advent.telegrambot.utils.MessageUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
-import java.io.ByteArrayInputStream;
-
-import static advent.telegrambot.handler.TelegramCommand.ADVENTS_CODES;
+import static advent.telegrambot.handler.TelegramCommand.ADVENTS_CODES_ADD;
 
 @Component
 @RequiredArgsConstructor
-public class AdventCodeHandler implements MessageHandler {
+public class AdventCodeAddGetHandler implements MessageHandler {
     private final PersonService personService;
     private final TelegramClient telegramClient;
-    private final AdventHandlerFactory adventHandlerFactory;
+    private final AdminProgressService adminProgressService;
 
     @SneakyThrows
     @Override
     public void handle(Update update) {
-        Integer adventId = ADVENTS_CODES.getIdFromAction(MessageUtils.getMessageText(update));
+        Integer adventId = ADVENTS_CODES_ADD.getIdFromAction(MessageUtils.getMessageText(update));
 
         SendMessage message = SendMessage.builder()
                 .chatId(MessageUtils.getChatId(update))
-                .text("Выберите действие для работы с кодами к адвенту.")
+                .text("""
+                        Для создания кодов введите нужное количество дней.
+                        Если по адвенту уже есть коды, то лишние будут удалены, а недостающие добавлены.
+                        """)
                 .replyMarkup(MessageUtils.getAdminCodesActionKeyboard(adventId))
                 .build();
         telegramClient.execute(message);
+        adminProgressService.saveCodeAdventId(MessageUtils.getTelegramUserId(update), adventId);
     }
 
     @Override
     public boolean canHandle(Update update) {
-        return TelegramCommand.ADVENTS_CODES.is(update) &&
+        return ADVENTS_CODES_ADD.is(update) &&
                 personService.isAdmin(MessageUtils.getTelegramUserId(update));
     }
 }
