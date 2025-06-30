@@ -30,7 +30,7 @@ import static advent.telegrambot.utils.MessageUtils.getTelegramUserId;
 public class QuestWithAllPersonAnswerService implements StepCreateHandler {
     private final ClsDataTypeService clsDataTypeService;
     private final AdminProgressService adminProgressService;
-    private final StepRepository stepRepository;
+    private final StepService stepService;
     private final StepCommon stepCommon;
     private final ClsQuestTypeService clsQuestTypeService;
     private final AdventService adventService;
@@ -102,7 +102,7 @@ public class QuestWithAllPersonAnswerService implements StepCreateHandler {
         long personId = getTelegramUserId(update);
         Pair<Integer, Integer> ids = adminProgressService.getAdventStepsCreateIds(personId);
         Step step = createStep(MessageUtils.getMessageText(update), ids.getLeft());
-        stepRepository.save(step);
+        stepService.save(step);
         return step.getId();
     }
 

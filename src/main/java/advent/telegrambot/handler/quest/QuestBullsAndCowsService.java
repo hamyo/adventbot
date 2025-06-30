@@ -8,10 +8,7 @@ import advent.telegrambot.domain.dto.BullsAndCowsResult;
 import advent.telegrambot.domain.quest.QuestBullsAndCows;
 import advent.telegrambot.handler.StepCreateHandler;
 import advent.telegrambot.repository.StepRepository;
-import advent.telegrambot.service.AdminProgressService;
-import advent.telegrambot.service.AdventCurrentStepService;
-import advent.telegrambot.service.ClsQuestTypeService;
-import advent.telegrambot.service.StepCommon;
+import advent.telegrambot.service.*;
 import advent.telegrambot.utils.AppException;
 import advent.telegrambot.utils.MessageUtils;
 import lombok.NonNull;
@@ -31,10 +28,10 @@ import static advent.telegrambot.utils.MessageUtils.getTelegramUserId;
 @RequiredArgsConstructor
 public class QuestBullsAndCowsService implements StepCreateHandler {
     private final AdventCurrentStepService adventCurrentStepService;
-    private final StepRepository stepRepository;
     private final AdminProgressService adminProgressService;
     private final StepCommon stepCommon;
     private final ClsQuestTypeService clsQuestTypeService;
+    private final StepService stepService;
 
     private final static int EXPECTED_ROWS = 3;
     private final static int SYMBOLS_COUNT = 4;
@@ -165,7 +162,7 @@ public class QuestBullsAndCowsService implements StepCreateHandler {
         long personId = getTelegramUserId(update);
         Pair<Integer, Integer> ids = adminProgressService.getAdventStepsCreateIds(personId);
         Step step = createStep(MessageUtils.getMessageText(update), ids.getLeft());
-        stepRepository.save(step);
+        stepService.save(step);
         return step.getId();
     }
 

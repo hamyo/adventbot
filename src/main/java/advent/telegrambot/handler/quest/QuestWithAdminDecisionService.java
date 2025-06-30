@@ -8,6 +8,7 @@ import advent.telegrambot.repository.StepRepository;
 import advent.telegrambot.service.AdminProgressService;
 import advent.telegrambot.service.ClsQuestTypeService;
 import advent.telegrambot.service.StepCommon;
+import advent.telegrambot.service.StepService;
 import advent.telegrambot.utils.AppException;
 import advent.telegrambot.utils.MessageUtils;
 import lombok.NonNull;
@@ -25,7 +26,7 @@ import static advent.telegrambot.utils.MessageUtils.getTelegramUserId;
 public class QuestWithAdminDecisionService implements StepCreateHandler {
     private final ClsQuestTypeService clsQuestTypeService;
     private final AdminProgressService adminProgressService;
-    private final StepRepository stepRepository;
+    private final StepService stepService;
     private final StepCommon stepCommon;
 
     private final static int EXPECTED_ROWS = 4;
@@ -62,7 +63,7 @@ public class QuestWithAdminDecisionService implements StepCreateHandler {
         long personId = getTelegramUserId(update);
         Pair<Integer, Integer> ids = adminProgressService.getAdventStepsCreateIds(personId);
         Step step = createStep(MessageUtils.getMessageText(update), ids.getLeft());
-        stepRepository.save(step);
+        stepService.save(step);
         return step.getId();
     }
 

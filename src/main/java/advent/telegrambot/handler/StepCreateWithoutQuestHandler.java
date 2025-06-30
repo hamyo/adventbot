@@ -6,6 +6,7 @@ import advent.telegrambot.repository.StepRepository;
 import advent.telegrambot.service.AdminProgressService;
 import advent.telegrambot.service.AdventService;
 import advent.telegrambot.service.StepCommon;
+import advent.telegrambot.service.StepService;
 import advent.telegrambot.utils.AppException;
 import advent.telegrambot.utils.MessageUtils;
 import advent.telegrambot.utils.NumberUtils;
@@ -18,10 +19,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Component
 @RequiredArgsConstructor
 public class StepCreateWithoutQuestHandler implements StepCreateHandler {
-    private final StepRepository stepRepository;
     private final AdminProgressService adminProgressService;
     private final AdventService adventService;
     private final StepCommon stepCommon;
+    private final StepService stepService;
 
     @Override
     public boolean canHandle(Integer questType) {
@@ -70,7 +71,7 @@ public class StepCreateWithoutQuestHandler implements StepCreateHandler {
         Pair<Integer, Integer> ids = adminProgressService.getAdventStepsCreateIds(MessageUtils.getTelegramUserId(update));
         Advent advent = adventService.findById(ids.getLeft());
         Step step = createStep(MessageUtils.getMessageText(update), advent);
-        stepRepository.save(step);
+        stepService.save(step);
         return step.getId();
     }
 }

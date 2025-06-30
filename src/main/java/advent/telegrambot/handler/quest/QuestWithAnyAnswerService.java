@@ -7,10 +7,7 @@ import advent.telegrambot.domain.quest.QuestWithAnyAnswer;
 import advent.telegrambot.handler.StepCreateHandler;
 import advent.telegrambot.repository.ClsQuestTypeRepository;
 import advent.telegrambot.repository.StepRepository;
-import advent.telegrambot.service.AdminProgressService;
-import advent.telegrambot.service.ClsDataTypeService;
-import advent.telegrambot.service.ClsQuestTypeService;
-import advent.telegrambot.service.StepCommon;
+import advent.telegrambot.service.*;
 import advent.telegrambot.utils.AppException;
 import advent.telegrambot.utils.MessageUtils;
 import lombok.NonNull;
@@ -31,7 +28,7 @@ public class QuestWithAnyAnswerService implements StepCreateHandler {
     private final ClsDataTypeService clsDataTypeService;
     private final ClsQuestTypeService clsQuestTypeService;
     private final AdminProgressService adminProgressService;
-    private final StepRepository stepRepository;
+    private final StepService stepService;
     private final StepCommon stepCommon;
 
     private final static int EXPECTED_ROWS = 5;
@@ -77,7 +74,7 @@ public class QuestWithAnyAnswerService implements StepCreateHandler {
         long personId = getTelegramUserId(update);
         Pair<Integer, Integer> ids = adminProgressService.getAdventStepsCreateIds(personId);
         Step step = createStep(MessageUtils.getMessageText(update), ids.getLeft());
-        stepRepository.save(step);
+        stepService.save(step);
         return step.getId();
     }
 
