@@ -1,10 +1,9 @@
 telegram:
   bot:
-    name:
-    token:
+    token: 1515
 
 server:
-  port: 8083
+  port: 8080
 
 spring:
   application:
@@ -13,9 +12,9 @@ spring:
     change-log: classpath:/db/changelog/db.changelog-master.xml
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/advent_tt
-    username:
-    password: 
+    url: jdbc:postgresql://localhost:5432/advent
+    username: postgres
+    password: postgres
     hikari:
       maximum-pool-size: 10               # Оптимально для средних нагрузок
       connection-timeout: 30000           # 30 секунд
@@ -24,17 +23,18 @@ spring:
       pool-name: SpringBootHikariCP
   jpa:
     hibernate:
-      ddl-auto: validate # сделать none
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc:
           lob:
             non_contextual_creation: true
-    show-sql: true                       # Только для разработки
-    open-in-view: false
+    #show-sql: true                       # Только для разработки
+    #open-in-view: false
 
 logging:
   level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    #org.hibernate.SQL: DEBUG
+    #org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    root: info

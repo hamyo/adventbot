@@ -10,9 +10,9 @@
                 <tableExists tableName="person"/>
             </not>
         </preConditions>
-        <createTable remarks="Участники" tableName="person" tablespace="advent_dbs">
+        <createTable remarks="Участники" tableName="person">
             <column name="p_id" remarks="Идентификатор" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_p" primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_p"/>
             </column>
             <column defaultValueBoolean="false" name="p_is_admin" remarks="Признак админа" type="BOOLEAN">
                 <constraints nullable="false"/>
@@ -27,10 +27,9 @@
                 <tableExists tableName="advent"/>
             </not>
         </preConditions>
-        <createTable remarks="Адвент" tableName="advent" tablespace="advent_dbs">
+        <createTable remarks="Адвент" tableName="advent">
             <column autoIncrement="true" name="a_id" remarks="Идентификатор" type="INTEGER">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="advent_pkey"
-                             primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="advent_pkey"/>
             </column>
             <column name="a_hello_message" remarks="Приветственное сообщение" type="TEXT">
                 <constraints nullable="false"/>
@@ -53,7 +52,7 @@
         </preConditions>
         <createTable remarks="Контент" tableName="content">
             <column autoIncrement="true" name="cn_id" remarks="Идентификатор" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cn" primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cn"/>
             </column>
             <column name="cdt_id" remarks="Тип данных" type="SMALLINT">
                 <constraints nullable="false"/>
@@ -73,7 +72,7 @@
         </preConditions>
         <createTable remarks="Шаг" tableName="step">
             <column autoIncrement="true" name="s_id" remarks="Идентификатор" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_s" primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_s"/>
             </column>
             <column name="s_order" remarks="Порядок" type="SMALLINT">
                 <constraints nullable="false" checkConstraint="s_order > 0"/>
@@ -96,7 +95,7 @@
         </preConditions>
         <createTable remarks="Подсказка" tableName="hint">
             <column autoIncrement="true" name="h_id" remarks="Идентификатор" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_h" primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_h"/>
             </column>
             <column name="h_text" remarks="Текст" type="TEXT"/>
             <column name="cn_id" remarks="Контент" type="BIGINT"/>
@@ -113,7 +112,7 @@
         </preConditions>
         <createTable remarks="Задание" tableName="quest">
             <column autoIncrement="true" name="q_id" remarks="Идентификатор" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_q" primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_q"/>
             </column>
             <column name="cqt_id" remarks="Тип задания" type="INTEGER">
                 <constraints nullable="false"/>
@@ -131,7 +130,7 @@
                 <indexExists indexName="i_a_chat_id"/>
             </not>
         </preConditions>
-        <createIndex indexName="i_a_chat_id" tableName="advent" tablespace="advent_dbs">
+        <createIndex indexName="i_a_chat_id" tableName="advent">
             <column name="a_chat_id"/>
         </createIndex>
     </changeSet>
@@ -141,7 +140,7 @@
                 <indexExists indexName="i_s_a_id"/>
             </not>
         </preConditions>
-        <createIndex indexName="i_s_a_id" tableName="step" tablespace="advent_dbs">
+        <createIndex indexName="i_s_a_id" tableName="step">
             <column name="a_id"/>
         </createIndex>
     </changeSet>
@@ -151,7 +150,7 @@
                 <indexExists indexName="i_h_q_id"/>
             </not>
         </preConditions>
-        <createIndex indexName="i_h_q_id" tableName="hint" tablespace="advent_dbs">
+        <createIndex indexName="i_h_q_id" tableName="hint">
             <column name="q_id"/>
         </createIndex>
     </changeSet>
@@ -161,12 +160,12 @@
                 <tableExists tableName="advent_person"/>
             </not>
         </preConditions>
-        <createTable remarks="Связь участника и адвента" tableName="advent_person" tablespace="advent_dbs">
+        <createTable remarks="Связь участника и адвента" tableName="advent_person">
             <column name="a_id" remarks="Идентификатор адвента" type="INTEGER">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ap" primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ap"/>
             </column>
             <column name="p_id" remarks="Идентификатор участника" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ap" primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ap"/>
             </column>
         </createTable>
     </changeSet>
@@ -176,9 +175,9 @@
                 <tableExists tableName="advent_current_step"/>
             </not>
         </preConditions>
-        <createTable remarks="Текущий прогресс адвента" tableName="advent_current_step" tablespace="advent_dbs">
+        <createTable remarks="Текущий прогресс адвента" tableName="advent_current_step">
             <column name="a_id" remarks="Идентификатор адвента" type="INTEGER">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_acs" primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_acs"/>
             </column>
             <column name="s_id" remarks="Текущий шаг" type="BIGINT"/>
             <column name="acs_data" remarks="Дополнительные данные" type="JSON"/>
@@ -190,7 +189,7 @@
                 <indexExists indexName="i_acs_s_id"/>
             </not>
         </preConditions>
-        <createIndex indexName="i_acs_s_id" tableName="advent_current_step" tablespace="advent_dbs">
+        <createIndex indexName="i_acs_s_id" tableName="advent_current_step">
             <column name="s_id"/>
         </createIndex>
     </changeSet>
@@ -200,9 +199,9 @@
                 <tableExists tableName="cls_advent_type"/>
             </not>
         </preConditions>
-        <createTable remarks="Тип адвента" tableName="cls_advent_type" tablespace="advent_dbs">
+        <createTable remarks="Тип адвента" tableName="cls_advent_type">
             <column name="cat_id" remarks="Идентификатор" type="INTEGER">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cat" primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cat"/>
             </column>
             <column name="cat_name" remarks="Наименование" type="VARCHAR(50)">
                 <constraints nullable="false"/>
@@ -215,9 +214,9 @@
                 <tableExists tableName="cls_data_type"/>
             </not>
         </preConditions>
-        <createTable remarks="Тип данных" tableName="cls_data_type" tablespace="advent_dbs">
+        <createTable remarks="Тип данных" tableName="cls_data_type">
             <column name="cdt_id" remarks="Идентификатор" type="SMALLINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cdt" primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cdt"/>
             </column>
             <column name="cdt_name" remarks="Наименование" type="VARCHAR(30)">
                 <constraints nullable="false"/>
@@ -231,9 +230,9 @@
                 <tableExists tableName="cls_quest_type"/>
             </not>
         </preConditions>
-        <createTable remarks="Тип задания" tableName="cls_quest_type" tablespace="advent_dbs">
+        <createTable remarks="Тип задания" tableName="cls_quest_type">
             <column name="cqt_id" remarks="Идентификатор" type="INTEGER">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cqt" primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cqt"/>
             </column>
             <column name="cqt_name" remarks="Наименование" type="VARCHAR(100)">
                 <constraints nullable="false"/>
@@ -249,12 +248,12 @@
                 <tableExists tableName="code"/>
             </not>
         </preConditions>
-        <createTable remarks="Код" tableName="code" tablespace="advent_dbs">
+        <createTable remarks="Код" tableName="code">
             <column name="a_id" remarks="Идентификатор" type="INTEGER">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_c" primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_c"/>
             </column>
             <column name="c_value" remarks="Значение" type="VARCHAR(40)">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_c" primaryKeyTablespace="advent_dbs"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_c"/>
             </column>
         </createTable>
     </changeSet>
@@ -391,10 +390,9 @@
                 <tableExists tableName="admin_process"/>
             </not>
         </preConditions>
-            <createTable remarks="Прогресс администратора" tableName="admin_progress" tablespace="advent_dbs">
+            <createTable remarks="Прогресс администратора" tableName="admin_progress">
                 <column name="p_id" remarks="Идентификатор" type="BIGINT">
-                    <constraints nullable="false" primaryKey="true" primaryKeyName="pk_aps"
-                                 primaryKeyTablespace="advent_dbs"/>
+                    <constraints nullable="false" primaryKey="true" primaryKeyName="pk_aps"/>
                 </column>
                 <column name="aps_data" remarks="Данные" type="JSON"/>
             </createTable>
@@ -415,6 +413,6 @@
                 <indexExists indexName="ak_s"/>
             </not>
         </preConditions>
-        <addUniqueConstraint tableName="step" columnNames="a_id, s_day, s_order" constraintName="ak_s" tablespace="advent_dbs"/>
+        <addUniqueConstraint tableName="step" columnNames="a_id, s_day, s_order" constraintName="ak_s"/>
     </changeSet>
 </databaseChangeLog>

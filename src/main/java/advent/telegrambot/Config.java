@@ -10,7 +10,6 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 @Configuration
 public class Config {
     @Value("${telegram.bot.token}") private String token;
-    @Value("${telegram.bot.name}") private String name;
 
     @Bean("telegramClient")
     public TelegramClient getTelegramClient() {
