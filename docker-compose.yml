@@ -39,18 +39,3 @@ services:
       postgres:
         condition: service_healthy
     restart: unless-stopped
-
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4:latest
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: pgadmin@admin.ru
-      PGADMIN_DEFAULT_PASSWORD: pgadmin
-    ports:
-      - "5050:80"
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
-
-volumes:
-  pgadmin-data:
