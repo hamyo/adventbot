@@ -36,6 +36,10 @@ public class Bot implements SpringLongPollingBot, LongPollingSingleThreadUpdateC
 
     @Override
     public void consume(Update update) {
+        log.info(
+                "Received message: chatId={}, personId={}",
+                MessageUtils.getChatId(update),
+                MessageUtils.getTelegramUserId(update));
         try {
             try {
                 handlerFactory.handle(update);
