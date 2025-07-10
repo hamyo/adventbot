@@ -5,7 +5,7 @@ FROM eclipse-temurin:24-jdk
 WORKDIR /app
 
 # Копируем JAR-файл
-COPY adventbot/build/libs/adventbot-0.0.1-SNAPSHOT.jar app.jar
+COPY ./build/libs/adventbot-0.0.1-SNAPSHOT.jar adventbot.jar
 
 # Параметры для запуска
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "adventbot.jar"]
