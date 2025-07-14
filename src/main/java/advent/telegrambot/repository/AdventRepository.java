@@ -18,7 +18,7 @@ public interface AdventRepository extends JpaRepository<Advent, Integer> {
     Optional<Advent> findByStepsQuestsId(Long questId);
 
     @Query(value = """
-                select a.a_id as id, a.a_start_date as startDate,
+                select a.a_id as id, a.a_start_date as startDate, a.a_hello_message as helloMessage,
                     c.cat_name as type,
                     (select count(distinct s.s_day) from step s where s.a_id = a.a_id) as daysCount
                 from advent a
