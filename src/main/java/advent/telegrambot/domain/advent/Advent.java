@@ -4,6 +4,7 @@ import advent.telegrambot.classifier.AdventType;
 import advent.telegrambot.domain.ClsAdventType;
 import advent.telegrambot.domain.Person;
 import advent.telegrambot.domain.Step;
+import advent.telegrambot.utils.StringUtils;
 import jakarta.persistence.*;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
@@ -59,10 +60,10 @@ public abstract class Advent {
 
     public String getInfo() {
         return String.format(
-                "id %s, ID чата телеграмма для адвента %s\nПриветственное сообщение:\n%s",
+                "id %s, id чата телеграмма для адвента %s\nПриветственное сообщение:\n%s",
                 id,
-                chatId == null ? "(Не указан)" : chatId,
-                helloMessage
+                StringUtils.getValueOrNotDefineMessage(chatId),
+                StringUtils.getValueOrNotDefineMessage(helloMessage)
                 );
     }
 }
