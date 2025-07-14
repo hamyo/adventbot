@@ -37,7 +37,7 @@ public class AdventNotFinishedHandler implements MessageHandler {
         List<AdventInfo> adventInfo = adventService.getNotFinishedAdvents();
         String message = adventInfo.stream()
                 .map(advent -> String.format(
-                        "%s id=%s, дата начала '%s', кол-во дней %s",
+                        "%s (id=%s, дата начала '%s', кол-во дней %s)",
                         advent.getType(),
                         advent.getId(),
                         advent.getStartDate().format(DateUtils.getRusDateFormatter()),

@@ -59,10 +59,10 @@ public abstract class Advent {
 
     public String getInfo() {
         return String.format(
-                "id=%s, Приветственное сообщение='%s', ID чата телеграмма для адвента='%s', Тип адвента",
+                "id %s, ID чата телеграмма для адвента %s\nПриветственное сообщение:\n%s",
                 id,
+                chatId == null ? "(Не указан)" : chatId,
                 helloMessage
                 );
     }
-
 }

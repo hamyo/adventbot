@@ -11,5 +11,4 @@ public interface AdventInfo {
     LocalDate getStartDate();
     String getType();
     Long getDaysCount();
-    String getHelloMessage();
 }

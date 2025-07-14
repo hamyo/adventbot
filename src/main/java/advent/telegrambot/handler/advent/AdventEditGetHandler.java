@@ -1,5 +1,6 @@
 package advent.telegrambot.handler.advent;
 
+import advent.telegrambot.domain.advent.Advent;
 import advent.telegrambot.handler.MessageHandler;
 import advent.telegrambot.handler.TelegramCommand;
 import advent.telegrambot.service.AdventService;
@@ -24,11 +25,18 @@ public class AdventEditGetHandler implements MessageHandler {
     @Override
     public void handle(Update update) {
         Integer adventId = TelegramCommand.ADVENTS_EDIT.getIdFromAction(MessageUtils.getMessageText(update));
+        Advent advent = adventService.findById(adventId);
+        telegramClient.execute(
+                SendMessage.builder()
+                        .text(advent.getInfo())
+                        .chatId(MessageUtils.getChatId(update))
+                        .build()
+        );
         telegramClient.execute(
                 SendMessage.builder()
                         .text("Для изменения данных, выберите нужный пункт из меню")
                         .chatId(MessageUtils.getChatId(update))
-                        .replyMarkup(adventHandlerFactory.getAdminKeyboard(adventService.findById(adventId)))
+                        .replyMarkup(adventHandlerFactory.getAdminKeyboard(advent))
                         .build()
         );
     }
