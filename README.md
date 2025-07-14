@@ -27,7 +27,8 @@
  7. Документ.
 
 ## Работа с проектом
-После клона проекта нужно собрать jar с помощью gradle. Для сборки вызовите из папки с приложением команду `gradlew.bat bootJar`(для Windows) или `./gradlew bootJar`(для Linux/macOS).
+После клона проекта нужно собрать jar с помощью gradle. Для сборки используется jdk 24 версии. 
+Вызовите из папки с приложением команду `gradlew.bat bootJar`(для Windows) или `./gradlew bootJar`(для Linux/macOS). Если jdk 24 не прописана в `JAVA_HOME`, то нужно использовать параметр -'Dorg.gradle.java.home'. Например, для Windows `gradlew.bat bootJar Dorg.gradle.java.home="E:\java\jdk-24.0.1"`.
 
 В директории с проектом в файле .env указываются необходимые значения.
 <br/>`POSTGRES_USER` и `POSTGRES_PASSWORD` - данные пользователя СУБД Postgres. Можно не менять. 
