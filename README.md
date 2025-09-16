@@ -77,3 +77,7 @@
 
 При создании шага выбирается тип задания или вариант без задания. Атрибуты и формат ввода будет зависеть от выбранного типа. К заданию можно указать подсказки.
 После создания шага можно загрузить контент. К шагу может быть привязан только один файл.
+
+## SAST Tools
+
+[PVS-Studio](https://pvs-studio.com/pvs-studio/?utm_source=website&utm_medium=github&utm_campaign=open_source) - static analyzer for C, C++, C#, and Java code.
