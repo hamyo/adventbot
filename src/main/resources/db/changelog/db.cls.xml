@@ -72,6 +72,16 @@
             <column name="cqt_description" value="Задача 'Быки и коровы', где нужно угадать загаданное число из 4 цифр. Цифры не повторяются."/>
         </insert>
     </changeSet>
+<!--    <changeSet id="1747910038081-8" author="Alexey.Kuzkin (generated)">-->
+<!--        <preConditions onFail="MARK_RAN">-->
+<!--            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM cls_quest_type where cqt_id = 6</sqlCheck>-->
+<!--        </preConditions>-->
+<!--        <insert tableName="cls_quest_type" >-->
+<!--            <column name="cqt_id" value="6"/>-->
+<!--            <column name="cqt_name" value="Апож"/>-->
+<!--            <column name="cqt_description" value="Задача, где нужно спеть части песни наоборот, и угадать исходную песню"/>-->
+<!--        </insert>-->
+<!--    </changeSet>-->
     <changeSet id="1747910038082-8" author="Alexey.Kuzkin (generated)">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">SELECT COUNT(*) FROM cls_data_type where cdt_id = 1</sqlCheck>

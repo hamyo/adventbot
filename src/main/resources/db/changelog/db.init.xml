@@ -257,6 +257,34 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="1757951039819-1" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="quest_content"/>
+            </not>
+        </preConditions>
+        <createTable remarks="Контент для заданий"
+                     tableName="quest_content">
+            <column name="q_id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_qcn"/>
+            </column>
+            <column name="cn_id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_qcn"/>
+            </column>
+            <column name="qcn_order"
+                    type="SMALLINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_qcn"/>
+            </column>
+        </createTable>
+    </changeSet>
     <changeSet id="1746985319977-17" author="Alexey.Kuzkin (generated)">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -414,5 +442,33 @@
             </not>
         </preConditions>
         <addUniqueConstraint tableName="step" columnNames="a_id, s_day, s_order" constraintName="ak_s"/>
+    </changeSet>
+    <changeSet id="1747307397735-34" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_qcn_cn"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="cn_id"
+                                 baseTableName="quest_content"
+                                 constraintName="fk_qcn_cn"
+                                 onDelete="RESTRICT"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="cn_id"
+                                 referencedTableName="content"/>
+    </changeSet>
+    <changeSet id="1747307397735-35" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_qcn_q"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="q_id"
+                                 baseTableName="quest_content"
+                                 constraintName="fk_qcn_q"
+                                 onDelete="RESTRICT"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="q_id"
+                                 referencedTableName="quest"/>
     </changeSet>
 </databaseChangeLog>

@@ -20,7 +20,8 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 @Slf4j
 @RequiredArgsConstructor
 public class Bot implements SpringLongPollingBot, LongPollingSingleThreadUpdateConsumer {
-    @Value("${telegram.bot.token}") private String token;
+    @Value("${telegram.bot.token}")
+    private String token;
     private final TelegramClient telegramClient;
     private final MessageHandlerFactory handlerFactory;
 

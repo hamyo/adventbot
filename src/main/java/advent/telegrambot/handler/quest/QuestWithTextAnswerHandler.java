@@ -13,7 +13,9 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Component
 @RequiredArgsConstructor
@@ -22,9 +24,30 @@ public class QuestWithTextAnswerHandler implements QuestHandler<QuestWithTextAns
     private final StepCommon stepCommon;
     private final AdventService adventService;
 
-    private boolean isAnswerRight(List<String> rightValues, final Update update) {
+    private static final Pattern WORD_SPLIT_PATTERN = Pattern.compile("[ ,.:?!;()\\[\\]/\\\\-]+");
+
+    private Pattern getWordSplitPattern() {
+        return WORD_SPLIT_PATTERN;
+    }
+
+    private boolean isAnswerRight(List<String> rightValues, Update update) {
         String userAnswer = MessageUtils.getMessageText(update);
-        return rightValues.stream().anyMatch(rightValue -> rightValue.equalsIgnoreCase(userAnswer));
+        return isAnswerRight(rightValues, userAnswer);
+    }
+
+    protected boolean isAnswerRight(List<String> rightValues, String userAnswer) {
+        String[] normalizeUserAnswer = normalize(userAnswer);
+        return rightValues.stream()
+                .anyMatch(rightValue -> Arrays.equals(normalize(rightValue), normalizeUserAnswer));
+    }
+
+    private String[] normalize(String value) {
+        return Arrays.stream(
+                getWordSplitPattern()
+                        .split(value))
+                .filter(word -> !word.isBlank())
+                .map(String::toLowerCase)
+                .toArray(String[]::new);
     }
 
     @SneakyThrows
