@@ -9,6 +9,7 @@ import advent.telegrambot.utils.AppException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,12 +24,15 @@ public class AdventByCodeService {
     private final StepRepository stepRepository;
     private final CodeService codeService;
 
+    @Value("app.codes.length")
+    private int codeLength;
+
     @Transactional
     public void addRandomCode(@NonNull Integer id) {
         AdventByCode adventByCode = findById(id);
         int needCodesCount = getNeedCodesCount(adventByCode, LocalDate.now());
         while (adventByCode.getCodes().size() < needCodesCount) {
-            String code = codeService.generateCode(10);
+            String code = codeService.generateCode(codeLength);
             adventByCode.getCodes().add(code);
         }
     }

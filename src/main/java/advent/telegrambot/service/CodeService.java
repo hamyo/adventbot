@@ -2,6 +2,7 @@ package advent.telegrambot.service;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -9,7 +10,8 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 public class CodeService {
-    private static final String ALLOWED_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    @Value("app.codes.allowed-symbols")
+    private String allowedSymbols;
     private static final Random random = new Random();
 
     public @NonNull String generateCode(int length) {
@@ -19,8 +21,8 @@ public class CodeService {
 
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
-            int randomIndex = random.nextInt(ALLOWED_CHARS.length());
-            sb.append(ALLOWED_CHARS.charAt(randomIndex));
+            int randomIndex = random.nextInt(allowedSymbols.length());
+            sb.append(allowedSymbols.charAt(randomIndex));
         }
         return sb.toString();
     }

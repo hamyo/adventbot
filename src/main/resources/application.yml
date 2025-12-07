@@ -1,6 +1,12 @@
+app:
+  codes:
+    length: 6
+    #allowed-symbols: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    allowed-symbols: "АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЭЮЯ0123456789"
+
 telegram:
   bot:
-    token: 1515
+    token: 123456
 
 server:
   port: 8080
