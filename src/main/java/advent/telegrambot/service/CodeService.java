@@ -10,7 +10,7 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 public class CodeService {
-    @Value("app.codes.allowed-symbols")
+    @Value("${app.codes.allowed-symbols}")
     private String allowedSymbols;
     private static final Random random = new Random();
 

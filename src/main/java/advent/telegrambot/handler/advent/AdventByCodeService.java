@@ -24,7 +24,7 @@ public class AdventByCodeService {
     private final StepRepository stepRepository;
     private final CodeService codeService;
 
-    @Value("app.codes.length")
+    @Value("${app.codes.length}")
     private int codeLength;
 
     @Transactional
