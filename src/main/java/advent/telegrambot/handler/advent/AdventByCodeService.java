@@ -52,7 +52,7 @@ public class AdventByCodeService {
         int diff = adventByCode.getCodes().size() - daysCount;
         if (diff < 0) {
             while (diff < 0) {
-                String code = codeService.generateCode(10);
+                String code = codeService.generateCode(codeLength);
                 if (!adventByCode.getCodes().contains(code)) {
                     adventByCode.getCodes().add(code);
                     diff++;

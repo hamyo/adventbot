@@ -130,6 +130,10 @@ public class AdventService {
     public byte[] getCodes(@NonNull Integer adventId) {
         Advent advent = findById(adventId);
         if (advent instanceof AdventByCode adventByCode) {
+            if (adventByCode.getCodes().isEmpty()) {
+                throw new AppException("Не найдено ни одного кода");
+            }
+
             return String.join("\n", adventByCode.getCodes())
                     .getBytes(StandardCharsets.UTF_8);
         }
