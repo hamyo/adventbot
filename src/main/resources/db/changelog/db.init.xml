@@ -134,16 +134,6 @@
             <column name="a_chat_id"/>
         </createIndex>
     </changeSet>
-    <changeSet id="1746985319977-8" author="Alexey.Kuzkin (generated)">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="i_s_a_id"/>
-            </not>
-        </preConditions>
-        <createIndex indexName="i_s_a_id" tableName="step">
-            <column name="a_id"/>
-        </createIndex>
-    </changeSet>
     <changeSet id="1746985319977-9" author="Alexey.Kuzkin (generated)">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -470,5 +460,22 @@
                                  onUpdate="NO ACTION"
                                  referencedColumnNames="q_id"
                                  referencedTableName="quest"/>
+    </changeSet>
+    <changeSet id="1747307397735-36" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <indexExists indexName="i_s_a_id"/>
+        </preConditions>
+        <dropIndex tableName="step" indexName="i_s_a_id"/>
+    </changeSet>
+    <changeSet id="1747307397735-37" author="Alexey.Kuzkin (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="i_s_a_id"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="i_s_a_id" tableName="step">
+            <column name="a_id"/>
+            <column name="s_day"/>
+        </createIndex>
     </changeSet>
 </databaseChangeLog>
